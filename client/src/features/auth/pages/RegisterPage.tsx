@@ -1,4 +1,4 @@
-import { Building2, ShieldCheck } from "lucide-react";
+import { Building2, CheckCircle2 } from "lucide-react";
 import {
   type RegisterFields,
   registerSchema,
@@ -45,34 +45,44 @@ export const RegisterPage = () => {
   return (
     <main className="min-h-screen bg-background px-4 py-10 text-foreground sm:px-6 lg:px-8">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center justify-center">
-        <section className="grid w-full overflow-hidden rounded-lg border border-border bg-card shadow-sm lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="flex flex-col justify-between border-b border-border bg-muted/40 p-6 sm:p-8 lg:border-r lg:border-b-0">
+        <section className="grid w-full overflow-hidden rounded-lg border border-border bg-card shadow-sm lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="flex flex-col justify-between border-b border-border bg-muted/30 p-6 sm:p-8 lg:border-r lg:border-b-0">
             <div>
-              <div className="mb-6 flex size-10 items-center justify-center rounded-lg border border-border bg-background">
-                <Building2 className="size-5" aria-hidden="true" />
+              <div className="mb-10 flex items-center gap-3">
+                <div className="flex size-8 items-center justify-center rounded-md border border-border bg-background">
+                  <Building2 className="size-4" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold leading-none">Harbor</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Service Management
+                  </p>
+                </div>
               </div>
 
-              <p className="mb-3 text-sm font-medium text-muted-foreground">
-                Harbor Service Management
+              <p className="text-xs font-medium uppercase text-muted-foreground">
+                Neue Organisation
               </p>
-              <h1 className="max-w-sm text-3xl font-semibold tracking-normal text-foreground">
+              <h1 className="mt-3 max-w-sm text-2xl font-semibold tracking-normal text-foreground">
                 Organisation erstellen
               </h1>
-              <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
-                Richte einen neuen Harbor-Arbeitsbereich für dein Unternehmen,
-                deine Service-Teams und Enterprise-Workflows ein.
+              <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
+                Erstelle die Organisation, unter der dein Unternehmen in Harbor
+                verwaltet wird.
               </p>
             </div>
 
-            <div className="mt-10 flex items-start gap-3 rounded-lg border border-border bg-background p-4">
-              <ShieldCheck
-                className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                aria-hidden="true"
-              />
-              <p className="text-xs leading-5 text-muted-foreground">
-                Du wirst der erste Organisationsadmin. Dein Team kannst du nach
-                der Einrichtung einladen.
-              </p>
+            <div className="mt-10 border-t border-border pt-6">
+              <div className="flex items-start gap-3">
+                <CheckCircle2
+                  className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <p className="text-xs leading-5 text-muted-foreground">
+                  Du wirst der erste Organisationsadmin. Dein Team kannst du
+                  nach der Einrichtung einladen.
+                </p>
+              </div>
             </div>
           </div>
 

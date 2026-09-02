@@ -1,13 +1,12 @@
 import { Outlet } from "react-router-dom";
 
-export const AppLayout = () => {
+export const PublicLayout = () => {
   return (
-    <section>
-      <h1>AppLayout</h1>
-
+    <div>
+      <h2>PublicLayout</h2>
       <div>
         <Outlet />
       </div>
-    </section>
+    </div>
   );
 };
