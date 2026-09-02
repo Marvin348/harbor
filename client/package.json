@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "api:generate": "docker run --rm -v \"$PWD:/local\" openapitools/openapi-generator-cli generate -i http://host.docker.internal:8080/v3/api-docs -g typescript-axios -o /local/src/api/generated --global-property models,modelDocs=false --additional-properties=withSeparateModelsAndApi=true,modelPackage=models,apiPackage=api"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

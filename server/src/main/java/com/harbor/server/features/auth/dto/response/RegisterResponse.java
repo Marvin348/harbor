@@ -1,12 +1,13 @@
 package com.harbor.server.features.auth.dto.response;
 
 import com.harbor.server.features.user.model.OrganizationRole;
+import jakarta.validation.constraints.NotNull;
 
 public record RegisterResponse(
-    Long userId,
-    Long organizationId,
-    String email,
-    String firstName,
-    String lastName,
-    String organizationName,
-    OrganizationRole role) {}
+    @NotNull Long userId,
+    @NotNull Long organizationId,
+    @NotNull String email,
+    @NotNull String firstName,
+    @NotNull String lastName,
+    @NotNull String organizationName,
+    @NotNull OrganizationRole role) {}
