@@ -5,13 +5,16 @@ import { LoginPage } from "@/features/auth/pages/LoginPage.tsx";
 import { ProtectedRoute } from "@/features/auth/pages/ProtectedRoute.tsx";
 import { PublicLayout } from "@/features/auth/pages/PublicLayout.tsx";
 import { OverviewPage } from "@/features/auth/pages/OverviewPage.tsx";
+import { Navigate } from "react-router-dom";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <PublicLayout />,
     children: [
-      { index: true, path: "login", element: <LoginPage /> },
+      { index: true, element: <Navigate to="/login" replace /> },
+
+      { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
     ],
   },

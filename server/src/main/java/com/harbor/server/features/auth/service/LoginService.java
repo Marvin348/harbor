@@ -1,36 +1,48 @@
 package com.harbor.server.features.auth.service;
 
-import com.harbor.server.common.exception.UnauthorizedException;
+import com.harbor.server.common.security.CustomUserDetails;
 import com.harbor.server.features.auth.dto.request.LoginRequest;
 import com.harbor.server.features.auth.dto.response.LoginResponse;
-import com.harbor.server.features.user.model.User;
-import com.harbor.server.features.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LoginService {
-  private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
+  private final AuthenticationManager authenticationManager;
+  private final SecurityContextRepository securityContextRepository;
 
-  public LoginResponse login(LoginRequest request) {
+  public LoginResponse login(
+      LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
     String email = request.email().trim().toLowerCase();
 
-    User user =
-        userRepository
-            .findByEmail(email)
-            .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(email, request.password()));
 
-    boolean isPasswordValid = passwordEncoder.matches(request.password(), user.getPasswordHash());
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    if (!isPasswordValid) {
-      throw new UnauthorizedException("Invalid credentials");
-    }
+    SecurityContext context = SecurityContextHolder.createEmptyContext();
+    context.setAuthentication(authentication);
+
+    SecurityContextHolder.setContext(context);
+
+    securityContextRepository.saveContext(context, httpRequest, httpResponse);
 
     return new LoginResponse(
-        user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getRole());
+        userDetails.getId(),
+        userDetails.getEmail(),
+        userDetails.getFirstName(),
+        userDetails.getLastName(),
+        userDetails.getRole());
   }
 }
