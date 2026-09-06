@@ -11,7 +11,7 @@ export const AppLayout = () => {
       <SidebarInset>
         <AppHeader />
 
-        <main>
+        <main className="p-6">
           <Outlet />
         </main>
       </SidebarInset>

@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,6 +31,8 @@ public class SecurityConfig {
             auth ->
                 auth.requestMatchers("/auth/register", "/auth/login", "/v3/api-docs/**")
                     .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/service-teams")
+                    .hasRole("ORGANIZATION_ADMIN")
                     .anyRequest()
                     .authenticated())
         .exceptionHandling(
