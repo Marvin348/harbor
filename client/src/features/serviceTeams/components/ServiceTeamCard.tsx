@@ -8,7 +8,10 @@ type ServiceTeamCardProps = {
 
 export const ServiceTeamCard = ({ serviceTeam }: ServiceTeamCardProps) => {
   return (
-    <Link to="/services" className="min-w-0 flex-1 divide-y divide-border">
+    <Link
+      to={`/service-teams/${serviceTeam.id}`}
+      className="min-w-0 flex-1 divide-y divide-border"
+    >
       <button
         type="button"
         className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-colors hover:bg-muted/40"

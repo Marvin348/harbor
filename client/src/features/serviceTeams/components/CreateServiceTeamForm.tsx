@@ -12,6 +12,9 @@ import {
 } from "@/features/serviceTeams/schema/createServiceTeamSchema.ts";
 import { useCreateServiceTeam } from "@/features/serviceTeams/hooks/useCreateServiceTeam.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
+import { showErrorToast } from "@/common/showErrorToast.ts";
+import { showSuccessToast } from "@/common/showSuccessToast.ts";
+import { getCreateServiceTeamErrorMessage } from "@/features/serviceTeams/errors/getCreateServiceTeamErrorMessage.ts";
 
 type CreateServiceTeamFormProps = {
   onClosePanel: () => void;
@@ -20,7 +23,7 @@ type CreateServiceTeamFormProps = {
 export const CreateServiceTeamForm = ({
   onClosePanel,
 }: CreateServiceTeamFormProps) => {
-  const { mutate, isPending, error } = useCreateServiceTeam();
+  const { mutate, isPending } = useCreateServiceTeam();
 
   const {
     register,
@@ -37,7 +40,12 @@ export const CreateServiceTeamForm = ({
   const onSubmit = (data: CreateServiceTeamFields) => {
     mutate(data, {
       onSuccess: () => {
+        showSuccessToast("Service-Team wurde erstellt.");
         onClosePanel();
+      },
+
+      onError: (error) => {
+        showErrorToast(getCreateServiceTeamErrorMessage(error));
       },
     });
   };
@@ -95,12 +103,6 @@ export const CreateServiceTeamForm = ({
       </div>
 
       <div className="shrink-0 border-t border-border px-5 py-4">
-        {error && (
-          <p className="mb-3 text-xs text-destructive">
-            Erstellen fehlgeschlagen. Bitte versuchen Sie es erneut.
-          </p>
-        )}
-
         <div className="flex justify-end gap-2">
           <SheetClose render={<Button type="button" variant="outline" />}>
             Abbrechen

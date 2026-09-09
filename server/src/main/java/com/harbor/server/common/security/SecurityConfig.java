@@ -33,6 +33,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/service-teams")
                     .hasRole("ORGANIZATION_ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/services")
+                    .hasRole("ORGANIZATION_ADMIN")
                     .anyRequest()
                     .authenticated())
         .exceptionHandling(
