@@ -3,10 +3,10 @@ import type { ServiceResponse } from "@/api/generated/models/service-response.ts
 import { getServices } from "@/features/services/api/service.ts";
 
 export const useGetServices = () => {
-  const { data, isLoading, error } = useQuery<ServiceResponse[], Error>({
+  const { data, isLoading, isError } = useQuery<ServiceResponse[], Error>({
     queryFn: getServices,
     queryKey: ["services"],
   });
 
-  return { services: data, isLoading, error };
+  return { services: data, isLoading, isError };
 };

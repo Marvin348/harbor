@@ -13,6 +13,7 @@ import { OrganizationSettingsPage } from "@/features/settings/pages/Organization
 import { ServiceTeamsPage } from "@/features/serviceTeams/pages/ServiceTeamsPage.tsx";
 import { MembersSettingsPage } from "@/features/settings/pages/MemberSettingsPage.tsx";
 import { ServiceTeamDetailsPage } from "@/features/serviceTeams/pages/ServiceTeamDetailsPage.tsx";
+import { TicketDetails } from "@/features/tickets/pages/TicketDetails.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -32,7 +33,6 @@ export const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: "overview", element: <OverviewPage /> },
-          { path: "tickets", element: <TicketsPage /> },
           { path: "services", element: <ServicesPage /> },
 
           {
@@ -42,7 +42,13 @@ export const router = createBrowserRouter([
               { path: ":id", element: <ServiceTeamDetailsPage /> },
             ],
           },
-
+          {
+            path: "tickets",
+            children: [
+              { path: "", element: <TicketsPage /> },
+              { path: ":id", element: <TicketDetails /> },
+            ],
+          },
           {
             path: "settings",
             element: <GeneralSettingsPage />,
