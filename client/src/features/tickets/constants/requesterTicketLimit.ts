@@ -1,0 +1,1 @@
+export const REQUESTER_TICKETS_LIMIT = 10;

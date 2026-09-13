@@ -9,7 +9,7 @@ type ServiceCatalogProps = {
 };
 
 export const ServiceCatalog = ({ onCreateService }: ServiceCatalogProps) => {
-  const { services = [], isLoading, error } = useGetServices();
+  const { services = [], isLoading, isError } = useGetServices();
 
   return (
     <section className="rounded-md border border-border bg-background">
@@ -21,7 +21,7 @@ export const ServiceCatalog = ({ onCreateService }: ServiceCatalogProps) => {
       </div>
       {isLoading ? (
         <ServiceCatalogLoadingState />
-      ) : error ? (
+      ) : isError ? (
         <ServiceCatalogErrorState />
       ) : services.length === 0 ? (
         <ServiceCatalogEmptyState onCreateService={onCreateService} />
