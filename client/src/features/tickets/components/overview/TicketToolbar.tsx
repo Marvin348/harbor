@@ -25,6 +25,8 @@ export const TicketToolbar = () => {
     if (nextSearch === params.search) {
       return;
     }
+
+    setSearch(nextSearch);
   }, [debouncedSearch, params.search, setSearch]);
 
   return (
