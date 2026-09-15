@@ -33,6 +33,12 @@ public class ServiceTeamMember {
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
+  public ServiceTeamMember(User user, ServiceTeam serviceTeam, Organization organization) {
+    this.user = user;
+    this.serviceTeam = serviceTeam;
+    this.organization = organization;
+  }
+
   @PrePersist
   protected void onCreate() {
     createdAt = LocalDateTime.now();
