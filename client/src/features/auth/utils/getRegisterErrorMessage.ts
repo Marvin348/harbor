@@ -1,8 +1,7 @@
 import axios from "axios";
-import type { ErrorResponse } from "react-router-dom";
 
 export const getRegisterErrorMessage = (error: unknown) => {
-  if (!axios.isAxiosError<ErrorResponse>(error)) {
+  if (!axios.isAxiosError(error)) {
     return "Registrierung fehlgeschlagen.";
   }
 

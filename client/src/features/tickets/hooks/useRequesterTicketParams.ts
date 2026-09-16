@@ -1,35 +1,17 @@
-import { useSearchParams } from "react-router-dom";
-import { requesterTicketParamsSchema } from "@/features/tickets/schema/requesterTicketParamsSchema.ts";
+import { Route } from "@/routes/_app.tickets";
 import type { TicketResponseStatusEnum } from "@/api/generated/models/ticket-response.ts";
 
 export const useRequesterTicketParams = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const params = requesterTicketParamsSchema.parse(
-    Object.fromEntries(searchParams.entries()),
-  );
+  const params = Route.useSearch();
+  const navigate = Route.useNavigate();
 
   const updateParams = (updates: Partial<typeof params>) => {
-    const updated = {
-      ...params,
-      ...updates,
-    };
-
-    const newSearchParams = new URLSearchParams();
-
-    if (updated.page !== 1) {
-      newSearchParams.set("page", String(updated.page));
-    }
-
-    if (updated.status) {
-      newSearchParams.set("status", updated.status);
-    }
-
-    if (updated.search) {
-      newSearchParams.set("search", updated.search);
-    }
-
-    setSearchParams(newSearchParams);
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        ...updates,
+      }),
+    });
   };
 
   const setPage = (page: number) => {

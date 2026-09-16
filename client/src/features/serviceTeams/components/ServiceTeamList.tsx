@@ -9,7 +9,7 @@ export const ServiceTeamList = ({ serviceTeams }: ServiceTeamListProps) => {
   return (
     <div className="w-full">
       {serviceTeams.map((team) => (
-        <ServiceTeamCard serviceTeam={team} key={team.name} />
+        <ServiceTeamCard serviceTeam={team} key={team.id} />
       ))}
     </div>
   );

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { TICKET_PRIORITY_LABELS } from "@/features/tickets/constants/ticketPriorityLabels.ts";
 import type { RequesterTicketItemResponse } from "@/api/generated/models/requester-ticket-item-response.ts";
 
@@ -9,7 +9,8 @@ type TicketItemProps = {
 export const TicketItem = ({ ticket }: TicketItemProps) => {
   return (
     <Link
-      to={`/tickets/${ticket.id}`}
+      to="/tickets/$id"
+      params={{ id: String(ticket.id) }}
       className="block w-full px-4 py-4 text-left transition-colors hover:bg-muted/40"
     >
       <div className="flex min-w-0 flex-col gap-2">

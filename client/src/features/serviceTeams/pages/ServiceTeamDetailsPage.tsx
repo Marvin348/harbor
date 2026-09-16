@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "@tanstack/react-router";
 
 export const ServiceTeamDetailsPage = () => {
-  const { id } = useParams();
+  const { id } = useParams({ strict: false });
 
   if (!id) return null;
 

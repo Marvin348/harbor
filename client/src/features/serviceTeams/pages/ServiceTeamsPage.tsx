@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet.tsx";
 import { ServiceTeamHeader } from "@/features/serviceTeams/components/ServiceTeamHeader.tsx";
 import { ServiceTeamList } from "@/features/serviceTeams/components/ServiceTeamList.tsx";
 import { CreateServiceTeamPanel } from "@/features/serviceTeams/components/CreateServiceTeamPanel.tsx";
 import { useGetServiceTeams } from "@/features/serviceTeams/hooks/useGetServiceTeams.ts";
 import { ServiceTeamsEmptyState } from "@/features/serviceTeams/components/ServiceTeamsEmptyState.tsx";
+import { ServiceTeamToolbar } from "@/features/serviceTeams/components/ServiceTeamToolbar.tsx";
 
 export const ServiceTeamsPage = () => {
   const [isCreating, setIsCreating] = useState(false);
@@ -15,7 +14,7 @@ export const ServiceTeamsPage = () => {
 
   return (
     <div>
-      <ServiceTeamHeader />
+      <ServiceTeamHeader onIsCreating={() => setIsCreating(true)} />
 
       <Sheet
         open={isCreating}
@@ -35,11 +34,7 @@ export const ServiceTeamsPage = () => {
                 Bestehende Teams und ihre aktuellen Service-Zuordnungen.
               </p>
             </div>
-
-            <Button onClick={() => setIsCreating(true)}>
-              <Plus />
-              Team erstellen
-            </Button>
+            <ServiceTeamToolbar />
           </div>
 
           {isLoading ? (
