@@ -13,15 +13,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogout } from "@/features/auth/hooks/useLogout.ts";
 
 export const NavUser = () => {
+  const navigate = useNavigate();
+
   const { user } = useCurrentUser();
+  const { mutate: logout, isPending } = useLogout();
+
   const { isMobile } = useSidebar();
 
   if (!user) {
     return null;
   }
+
+  const onLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        navigate("/login");
+      },
+    });
+  };
 
   return (
     <SidebarMenu>
@@ -58,9 +71,8 @@ export const NavUser = () => {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuItem disabled={isPending} onClick={onLogout}>
+              <LogOut /> Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
