@@ -17,6 +17,10 @@ export const login = async (data: LoginFields): Promise<LoginResponse> => {
   return res.data;
 };
 
+export const logout = async () => {
+  await apiClient.post("auth/logout");
+};
+
 export const getCurrentUser = async (): Promise<CurrentUserResponse> => {
   const res = await apiClient.get("auth/me");
   return res.data;

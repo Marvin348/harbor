@@ -7,6 +7,7 @@ import com.harbor.server.features.auth.dto.response.RegisterResponse;
 import com.harbor.server.features.auth.dto.request.RegisterRequest;
 import com.harbor.server.features.auth.dto.response.LoginResponse;
 import com.harbor.server.features.auth.service.LoginService;
+import com.harbor.server.features.auth.service.LogoutService;
 import com.harbor.server.features.auth.service.RegisterService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
   private final RegisterService registerService;
   private final LoginService loginService;
+  private final LogoutService logoutService;
 
   @PostMapping("/register")
   @ResponseStatus(HttpStatus.CREATED)
@@ -35,6 +37,12 @@ public class AuthController {
       HttpServletRequest request,
       HttpServletResponse response) {
     return loginService.login(body, request, response);
+  }
+
+  @PostMapping("/logout")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void logout(HttpServletRequest request) {
+    logoutService.logout(request);
   }
 
   @GetMapping("/me")
