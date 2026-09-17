@@ -7,7 +7,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar.tsx";
 import { SIDEBAR_SETTINGS_ITEMS } from "@/features/appLayout/constants/sidebar.ts";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import {
   Collapsible,
   CollapsibleContent,

@@ -2,7 +2,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar.tsx";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 
 type SidebarNavItemProps = {
   label: string;

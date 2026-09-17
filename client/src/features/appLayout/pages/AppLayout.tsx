@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from "@tanstack/react-router";
 import { AppSidebar } from "@/features/appLayout/components/sidebar/AppSidebar.tsx";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar.tsx";
 import { AppHeader } from "@/features/appLayout/components/AppHeader.tsx";

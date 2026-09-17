@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { Building2, CheckCircle2 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 export const LoginPage = () => {
   const { mutate, isPending, isError } = useLogin();
@@ -29,7 +28,7 @@ export const LoginPage = () => {
   const onSubmit = (data: LoginFields) => {
     mutate(data, {
       onSuccess: () => {
-        navigate("/overview");
+        void navigate({ to: "/overview" });
       },
     });
   };

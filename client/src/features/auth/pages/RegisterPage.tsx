@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { useRegister } from "@/features/auth/hooks/useRegister.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { getRegisterErrorMessage } from "@/features/auth/utils/getRegisterErrorMessage.ts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 
 export const RegisterPage = () => {
   const { mutate, isPending, error } = useRegister();
@@ -35,7 +35,7 @@ export const RegisterPage = () => {
   const onSubmit = (data: RegisterFields) => {
     mutate(data, {
       onSuccess: () => {
-        navigate("/login");
+        void navigate({ to: "/login" });
       },
     });
   };

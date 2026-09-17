@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useLogout } from "@/features/auth/hooks/useLogout.ts";
 
 export const NavUser = () => {
@@ -31,7 +31,7 @@ export const NavUser = () => {
   const onLogout = () => {
     logout(undefined, {
       onSuccess: () => {
-        navigate("/login");
+        void navigate({ to: "/login" });
       },
     });
   };

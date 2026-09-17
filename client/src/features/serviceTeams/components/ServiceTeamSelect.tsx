@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetServiceTeams } from "@/features/serviceTeams/hooks/useGetServiceTeams";
+import { useGetServiceTeamOptions } from "@/features/serviceTeams/hooks/useGetServiceTeamOptions.ts";
 
 type ServiceTeamSelectProps = {
   value?: number;
@@ -20,9 +20,13 @@ export const ServiceTeamSelect = ({
   ariaInvalid,
   ariaDescribedBy,
 }: ServiceTeamSelectProps) => {
-  const { serviceTeams = [], isLoading, isError } = useGetServiceTeams();
+  const {
+    serviceTeamOptions = [],
+    isLoading,
+    isError,
+  } = useGetServiceTeamOptions();
 
-  const isDisabled = isLoading || isError || serviceTeams.length === 0;
+  const isDisabled = isLoading || isError || serviceTeamOptions.length === 0;
 
   return (
     <Select
@@ -32,7 +36,7 @@ export const ServiceTeamSelect = ({
           onValueChange(serviceTeamId);
         }
       }}
-      items={serviceTeams.map((serviceTeam) => ({
+      items={serviceTeamOptions.map((serviceTeam) => ({
         value: serviceTeam.id,
         label: serviceTeam.name,
       }))}
@@ -48,7 +52,7 @@ export const ServiceTeamSelect = ({
       </SelectTrigger>
 
       <SelectContent alignItemWithTrigger={false} className="p-1">
-        {serviceTeams.map((serviceTeam) => (
+        {serviceTeamOptions.map((serviceTeam) => (
           <SelectItem key={serviceTeam.id} value={serviceTeam.id}>
             {serviceTeam.name}
           </SelectItem>
