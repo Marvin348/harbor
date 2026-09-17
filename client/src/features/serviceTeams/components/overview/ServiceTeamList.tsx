@@ -1,8 +1,8 @@
-import { ServiceTeamCard } from "@/features/serviceTeams/components/ServiceTeamCard.tsx";
-import type { ServiceTeamResponse } from "@/api/generated/models/service-team-response.ts";
+import { ServiceTeamCard } from "@/features/serviceTeams/components/overview/ServiceTeamCard.tsx";
+import type { ServiceTeamListItemResponse } from "@/api/generated/models/service-team-list-item-response.ts";
 
 type ServiceTeamListProps = {
-  serviceTeams: ServiceTeamResponse[];
+  serviceTeams: ServiceTeamListItemResponse[];
 };
 
 export const ServiceTeamList = ({ serviceTeams }: ServiceTeamListProps) => {

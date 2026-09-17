@@ -7,7 +7,7 @@ type ServiceTeamHeaderProps = {
 
 export const ServiceTeamHeader = ({ onIsCreating }: ServiceTeamHeaderProps) => {
   return (
-    <section className="flex flex-col gap-4 mb-6 xl:flex-row xl:items-top xl:justify-between">
+    <section className="mb-6 flex flex-col gap-4 lg-6 md:flex-row lg:items-top lg:justify-between">
       <div className="max-w-3xl">
         <h1 className="text-2xl font-semibold tracking-normal">
           Service-Teams
@@ -22,29 +22,6 @@ export const ServiceTeamHeader = ({ onIsCreating }: ServiceTeamHeaderProps) => {
         <Plus />
         Team erstellen
       </Button>
-
-      {/*<div className="grid gap-2 sm:grid-cols-3 xl:min-w-[420px]">*/}
-      {/*  <div className="rounded-md border border-border bg-background px-3 py-2">*/}
-      {/*    <div className="text-xs text-muted-foreground">Aktive Teams</div>*/}
-      {/*    <div className="mt-1 text-xl font-semibold">0/!*{activeTeams}*!/</div>*/}
-      {/*  </div>*/}
-      {/*  <div className="rounded-md border border-border bg-background px-3 py-2">*/}
-      {/*    <div className="text-xs text-muted-foreground">*/}
-      {/*      Teams ohne Mitglieder*/}
-      {/*    </div>*/}
-      {/*    <div className="mt-1 text-xl font-semibold">*/}
-      {/*      0/!*{teamsWithoutMembers}*!/*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*  <div className="rounded-md border border-border bg-background px-3 py-2">*/}
-      {/*    <div className="text-xs text-muted-foreground">*/}
-      {/*      Verbundene Services*/}
-      {/*    </div>*/}
-      {/*    <div className="mt-1 text-xl font-semibold">*/}
-      {/*      0/!*{connectedServices}*!/*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
     </section>
   );
 };
