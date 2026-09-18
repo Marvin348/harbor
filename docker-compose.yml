@@ -16,7 +16,7 @@ services:
 
 
   redis:
-    image: redis:7-alpine
+    image: redis:7.4-alpine
     container_name: harbor-redis-container
     ports:
       - "${REDIS_PORT}:6379"
