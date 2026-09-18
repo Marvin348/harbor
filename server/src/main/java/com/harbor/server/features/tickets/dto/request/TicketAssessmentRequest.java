@@ -6,6 +6,7 @@ import com.harbor.server.features.tickets.model.TicketUrgency;
 import jakarta.validation.constraints.NotNull;
 
 public record TicketAssessmentRequest(
-    @NotNull TicketImpact impact,
-    @NotNull TicketUrgency urgency,
-    @NotNull TicketBusinessCriticality businessCriticality) {}
+    @NotNull(message = "Impact is required") TicketImpact impact,
+    @NotNull(message = "Urgency is required") TicketUrgency urgency,
+    @NotNull(message = "Business criticality is required")
+        TicketBusinessCriticality businessCriticality) {}
