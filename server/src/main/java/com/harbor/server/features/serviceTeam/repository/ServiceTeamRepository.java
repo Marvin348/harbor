@@ -1,5 +1,6 @@
 package com.harbor.server.features.serviceTeam.repository;
 
+import com.harbor.server.features.serviceTeam.dto.response.ServiceTeamDetailsResponse;
 import com.harbor.server.features.serviceTeam.dto.response.ServiceTeamListItemResponse;
 import com.harbor.server.features.serviceTeam.dto.response.ServiceTeamOptionResponse;
 import com.harbor.server.features.serviceTeam.model.ServiceTeam;
@@ -53,4 +54,25 @@ public interface ServiceTeamRepository extends JpaRepository<ServiceTeam, Long> 
         """)
   Page<ServiceTeamListItemResponse> findServiceTeams(
       Long organizationId, Pageable pageable, String search);
+
+  @Query(
+"""
+        SELECT NEW com.harbor.server.features.serviceTeam.dto.response.ServiceTeamDetailsResponse(
+        st.id,
+        st.name,
+        st.description,
+        COUNT(DISTINCT stm.id),
+        COUNT(DISTINCT s.id)
+        )
+        FROM ServiceTeam st
+        LEFT JOIN Service s
+            ON s.serviceTeam.id = st.id
+        LEFT JOIN ServiceTeamMember stm
+            ON stm.serviceTeam.id = st.id
+        WHERE st.id = :serviceTeamId
+        AND st.organization.id = :organizationId
+        GROUP BY st.id, st.name, st.description
+        """)
+  Optional<ServiceTeamDetailsResponse> findServiceTeamDetails(
+      Long organizationId, Long serviceTeamId);
 }
