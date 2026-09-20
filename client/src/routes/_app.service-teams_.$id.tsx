@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ServiceTeamDetailsPage } from "@/features/serviceTeams/pages/ServiceTeamDetailsPage.tsx";
+import { ServiceTeamDetailsLayout } from "@/features/serviceTeams/pages/ServiceTeamDetailsLayout.tsx";
 
 export const Route = createFileRoute("/_app/service-teams_/$id")({
-  component: ServiceTeamDetailsPage,
+  component: ServiceTeamDetailsLayout,
 });

@@ -12,4 +12,8 @@ public class CurrentUserProvider {
 
     return (CustomUserDetails) authentication.getPrincipal();
   }
+
+  public Long getCurrentOrganizationId() {
+    return getCurrentUser().getOrganizationId();
+  }
 }

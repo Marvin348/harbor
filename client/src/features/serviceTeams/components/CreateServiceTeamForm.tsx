@@ -10,7 +10,7 @@ import {
   createServiceTeamSchema,
   type CreateServiceTeamFields,
 } from "@/features/serviceTeams/schema/createServiceTeamSchema.ts";
-import { useCreateServiceTeam } from "@/features/serviceTeams/hooks/useCreateServiceTeam.tsx";
+import { useCreateServiceTeam } from "@/features/serviceTeams/hooks/useCreateServiceTeam.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { showErrorToast } from "@/common/showErrorToast.ts";
 import { showSuccessToast } from "@/common/showSuccessToast.ts";

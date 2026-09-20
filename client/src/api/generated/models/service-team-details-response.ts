@@ -14,9 +14,11 @@
 
 
 
-export interface ErrorResponse {
-    'status'?: number;
-    'error'?: string;
-    'message'?: string;
+export interface ServiceTeamDetailsResponse {
+    'id': number;
+    'name': string;
+    'description': string;
+    'agentCount': number;
+    'serviceCount': number;
 }
 
