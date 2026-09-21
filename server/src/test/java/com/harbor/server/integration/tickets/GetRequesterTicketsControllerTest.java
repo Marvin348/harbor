@@ -31,7 +31,7 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
     Service service = createService(organization);
     Ticket ownTicket =
         testDataFactory.createTicket(
-            auth.user(), service, "Login failed", TicketStatus.OPEN, TicketPriority.HIGH);
+            auth.user(), service, "Login failed", TicketStatus.OPEN, TicketPriority.MEDIUM);
 
     User otherRequester =
         testDataFactory.createUser(
@@ -41,7 +41,11 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
             OrganizationRole.REQUESTER,
             organization);
     testDataFactory.createTicket(
-        otherRequester, service, "Other requester ticket", TicketStatus.OPEN, null);
+        otherRequester,
+        service,
+        "Other requester ticket",
+        TicketStatus.OPEN,
+        TicketPriority.MEDIUM);
 
     Organization otherOrganization = testDataFactory.createOrganization();
     User foreignRequester =
@@ -53,7 +57,11 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
             otherOrganization);
     Service foreignService = createService(otherOrganization);
     testDataFactory.createTicket(
-        foreignRequester, foreignService, "Foreign ticket", TicketStatus.OPEN, null);
+        foreignRequester,
+        foreignService,
+        "Foreign ticket",
+        TicketStatus.OPEN,
+        TicketPriority.MEDIUM);
 
     mockMvc
         .perform(
@@ -64,7 +72,7 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
         .andExpect(jsonPath("$.content[0].subject").value("Login failed"))
         .andExpect(jsonPath("$.content[0].serviceName").value("IT Service"))
         .andExpect(jsonPath("$.content[0].status").value("OPEN"))
-        .andExpect(jsonPath("$.content[0].priority").value("HIGH"))
+        .andExpect(jsonPath("$.content[0].priority").value("MEDIUM"))
         .andExpect(jsonPath("$.content[0].assignedAgentName").doesNotExist())
         .andExpect(jsonPath("$.content[0].createdAt").isNotEmpty())
         .andExpect(jsonPath("$.content[0].updatedAt").isNotEmpty())
@@ -99,9 +107,17 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
     Service service = createService(auth.user().getOrganization());
     Ticket matchingTicket =
         testDataFactory.createTicket(
-            auth.user(), service, "VPN connection failed", TicketStatus.OPEN, null);
+            auth.user(),
+            service,
+            "VPN connection failed",
+            TicketStatus.OPEN,
+            TicketPriority.MEDIUM);
     testDataFactory.createTicket(
-        auth.user(), service, "Printer is offline", TicketStatus.OPEN, null);
+        auth.user(),
+        service,
+        "Printer is offline",
+        TicketStatus.OPEN,
+        TicketPriority.MEDIUM);
 
     mockMvc
         .perform(
@@ -123,8 +139,13 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
     Service service = createService(auth.user().getOrganization());
     Ticket closedTicket =
         testDataFactory.createTicket(
-            auth.user(), service, "Resolved incident", TicketStatus.CLOSED, null);
-    testDataFactory.createTicket(auth.user(), service, "Open incident", TicketStatus.OPEN, null);
+            auth.user(),
+            service,
+            "Resolved incident",
+            TicketStatus.CLOSED,
+            TicketPriority.MEDIUM);
+    testDataFactory.createTicket(
+        auth.user(), service, "Open incident", TicketStatus.OPEN, TicketPriority.MEDIUM);
 
     mockMvc
         .perform(
@@ -146,13 +167,25 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
     Service service = createService(auth.user().getOrganization());
     Ticket oldestTicket =
         testDataFactory.createTicket(
-            auth.user(), service, "Oldest ticket", TicketStatus.OPEN, null);
+            auth.user(),
+            service,
+            "Oldest ticket",
+            TicketStatus.OPEN,
+            TicketPriority.MEDIUM);
     Ticket middleTicket =
         testDataFactory.createTicket(
-            auth.user(), service, "Middle ticket", TicketStatus.OPEN, null);
+            auth.user(),
+            service,
+            "Middle ticket",
+            TicketStatus.OPEN,
+            TicketPriority.MEDIUM);
     Ticket newestTicket =
         testDataFactory.createTicket(
-            auth.user(), service, "Newest ticket", TicketStatus.OPEN, null);
+            auth.user(),
+            service,
+            "Newest ticket",
+            TicketStatus.OPEN,
+            TicketPriority.MEDIUM);
 
     mockMvc
         .perform(

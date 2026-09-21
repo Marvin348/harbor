@@ -97,11 +97,11 @@ public class TestDataFactory {
             requester,
             subject,
             "This is the description for the ticket",
+            priority,
             TicketImpact.SINGLE_USER,
             TicketUrgency.WORK_DEGRADED,
             TicketBusinessCriticality.NORMAL);
     ticket.setStatus(status);
-    ticket.setPriority(priority);
 
     return ticketRepository.save(ticket);
   }

@@ -10,6 +10,7 @@ import com.harbor.server.features.services.repository.ServiceRepository;
 import com.harbor.server.features.tickets.dto.request.CreateTicketRequest;
 import com.harbor.server.features.tickets.dto.response.TicketResponse;
 import com.harbor.server.features.tickets.model.Ticket;
+import com.harbor.server.features.tickets.model.TicketPriority;
 import com.harbor.server.features.tickets.repository.TicketRepository;
 import com.harbor.server.features.user.model.User;
 import com.harbor.server.features.user.repository.UserRepository;
@@ -24,6 +25,7 @@ public class CreateTicket {
   private final UserRepository userRepository;
   private final ServiceRepository serviceRepository;
   private final TicketRepository ticketRepository;
+  private final TicketPriorityCalculator ticketPriorityCalculator;
 
   public TicketResponse execute(CreateTicketRequest request) {
     CustomUserDetails userDetails = currentUserProvider.getCurrentUser();
@@ -50,6 +52,8 @@ public class CreateTicket {
     String subject = request.subject().trim();
     String description = request.description().trim();
 
+    TicketPriority priority = ticketPriorityCalculator.calculate(request.assessment());
+
     Ticket ticket =
         new Ticket(
             organization,
@@ -58,6 +62,7 @@ public class CreateTicket {
             requester,
             subject,
             description,
+            priority,
             request.assessment().impact(),
             request.assessment().urgency(),
             request.assessment().businessCriticality());
