@@ -174,6 +174,7 @@ public class SeedDataService {
               requester,
               seed.subject(),
               seed.description(),
+              seed.priority(),
               seed.impact(),
               seed.urgency(),
               seed.businessCriticality());

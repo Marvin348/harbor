@@ -19,7 +19,7 @@ export interface RequesterTicketItemResponse {
     'subject': string;
     'serviceName': string;
     'status': RequesterTicketItemResponseStatusEnum;
-    'priority'?: RequesterTicketItemResponsePriorityEnum | null;
+    'priority': RequesterTicketItemResponsePriorityEnum;
     'assignedAgentName'?: string | null;
     'createdAt': string;
     'updatedAt': string;

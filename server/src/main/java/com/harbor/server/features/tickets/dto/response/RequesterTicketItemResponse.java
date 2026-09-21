@@ -13,7 +13,7 @@ public record RequesterTicketItemResponse(
     @NotNull String serviceName,
     @NotNull TicketStatus status,
 
-    @Schema(nullable = true) TicketPriority priority,
+    @NotNull TicketPriority priority,
     @Schema(nullable = true) String assignedAgentName,
 
     @NotNull LocalDateTime createdAt,

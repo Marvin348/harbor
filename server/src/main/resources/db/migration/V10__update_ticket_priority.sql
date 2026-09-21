@@ -1,0 +1,2 @@
+ALTER TABLE tickets
+    ALTER COLUMN priority SET NOT NULL;

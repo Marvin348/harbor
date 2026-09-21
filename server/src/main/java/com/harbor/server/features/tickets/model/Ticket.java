@@ -66,8 +66,7 @@ public class Ticket {
 
   @Setter
   @Enumerated(EnumType.STRING)
-  @Column
-  // TODO(Harbor): Replace hardcoded priority with matrix calculation service
+  @Column(nullable = false)
   private TicketPriority priority;
 
   @Setter
@@ -100,6 +99,7 @@ public class Ticket {
       User requester,
       String subject,
       String description,
+      TicketPriority priority,
       TicketImpact impact,
       TicketUrgency urgency,
       TicketBusinessCriticality businessCriticality) {
@@ -109,6 +109,7 @@ public class Ticket {
     this.requester = requester;
     this.subject = subject;
     this.description = description;
+    this.priority = priority;
     this.impact = impact;
     this.urgency = urgency;
     this.businessCriticality = businessCriticality;

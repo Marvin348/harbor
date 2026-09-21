@@ -25,5 +25,12 @@ public class ServiceTeamMembersSeedData {
           new ServiceTeamMemberSeed("paul.neumann@harbor-demo.test", "Cloud Platform"),
           new ServiceTeamMemberSeed("sofia.hartmann@harbor-demo.test", "Security Operations"),
           new ServiceTeamMemberSeed("david.becker@harbor-demo.test", "Security Operations"),
-          new ServiceTeamMemberSeed("clara.schulz@harbor-demo.test", "Security Operations"));
+          new ServiceTeamMemberSeed("clara.schulz@harbor-demo.test", "Security Operations"),
+          new ServiceTeamMemberSeed("moritz.hahn@harbor-demo.test", "Workplace Support"),
+          new ServiceTeamMemberSeed("aylin.yilmaz@harbor-demo.test", "Identity Access"),
+          new ServiceTeamMemberSeed("maximilian.fuchs@harbor-demo.test", "Business Applications"),
+          new ServiceTeamMemberSeed("selin.arslan@harbor-demo.test", "Network Operations"),
+          new ServiceTeamMemberSeed("fabian.lorenz@harbor-demo.test", "Security Operations"),
+          new ServiceTeamMemberSeed("zoe.berger@harbor-demo.test", "Cloud Platform"),
+          new ServiceTeamMemberSeed("jonathan.keller@harbor-demo.test", "Network Operations"));
 }

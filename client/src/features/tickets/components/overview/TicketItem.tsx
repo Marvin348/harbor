@@ -25,10 +25,7 @@ export const TicketItem = ({ ticket }: TicketItemProps) => {
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <span>{ticket.serviceName}</span>
             <span>·</span>
-            <span>
-              Priorität:{" "}
-              {ticket.priority ? TICKET_PRIORITY_LABELS[ticket.priority] : ""}
-            </span>
+            <span>Priorität: {TICKET_PRIORITY_LABELS[ticket.priority]}</span>
             <span>·</span>
             <span>
               {ticket.assignedAgentName

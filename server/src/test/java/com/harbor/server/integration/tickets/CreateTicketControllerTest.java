@@ -13,6 +13,7 @@ import com.harbor.server.features.services.model.Service;
 import com.harbor.server.features.tickets.model.Ticket;
 import com.harbor.server.features.tickets.model.TicketBusinessCriticality;
 import com.harbor.server.features.tickets.model.TicketImpact;
+import com.harbor.server.features.tickets.model.TicketPriority;
 import com.harbor.server.features.tickets.model.TicketStatus;
 import com.harbor.server.features.tickets.model.TicketUrgency;
 import com.harbor.server.features.tickets.repository.TicketRepository;
@@ -67,7 +68,7 @@ public class CreateTicketControllerTest extends AbstractControllerIntegrationTes
         .andExpect(jsonPath("$.id").isNumber())
         .andExpect(jsonPath("$.subject").value("Login failed"))
         .andExpect(jsonPath("$.status").value("OPEN"))
-        .andExpect(jsonPath("$.priority").doesNotExist())
+        .andExpect(jsonPath("$.priority").value("CRITICAL"))
         .andExpect(jsonPath("$.createdAt").isNotEmpty());
 
     assertEquals(1, ticketRepository.count());
@@ -80,12 +81,12 @@ public class CreateTicketControllerTest extends AbstractControllerIntegrationTes
     assertEquals(TicketImpact.SINGLE_USER, ticket.getImpact());
     assertEquals(TicketUrgency.WORK_BLOCKED, ticket.getUrgency());
     assertEquals(TicketBusinessCriticality.HIGH, ticket.getBusinessCriticality());
+    assertEquals(TicketPriority.CRITICAL, ticket.getPriority());
     assertEquals(organization.getId(), ticket.getOrganization().getId());
     assertEquals(serviceTeam.getId(), ticket.getServiceTeam().getId());
     assertEquals(service.getId(), ticket.getService().getId());
     assertEquals(auth.user().getId(), ticket.getRequester().getId());
     assertNull(ticket.getAssignedAgent());
-    assertNull(ticket.getPriority());
     assertNotNull(ticket.getCreatedAt());
     assertNotNull(ticket.getUpdatedAt());
   }

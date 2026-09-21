@@ -160,5 +160,65 @@ public class UserSeedData {
               "Sommer",
               "nina.sommer@harbor-demo.test",
               "HarborDemo123!",
+              OrganizationRole.REQUESTER),
+          new UserSeed(
+              "Julia",
+              "Otto",
+              "julia.otto@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.REQUESTER),
+          new UserSeed(
+              "Moritz",
+              "Hahn",
+              "moritz.hahn@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.AGENT),
+          new UserSeed(
+              "Aylin",
+              "Yilmaz",
+              "aylin.yilmaz@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.AGENT),
+          new UserSeed(
+              "Maximilian",
+              "Fuchs",
+              "maximilian.fuchs@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.AGENT),
+          new UserSeed(
+              "Selin",
+              "Arslan",
+              "selin.arslan@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.AGENT),
+          new UserSeed(
+              "Fabian",
+              "Lorenz",
+              "fabian.lorenz@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.AGENT),
+          new UserSeed(
+              "Zoe",
+              "Berger",
+              "zoe.berger@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.AGENT),
+          new UserSeed(
+              "Jonathan",
+              "Keller",
+              "jonathan.keller@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.AGENT),
+          new UserSeed(
+              "Melina",
+              "Franke",
+              "melina.franke@harbor-demo.test",
+              "HarborDemo123!",
+              OrganizationRole.REQUESTER),
+          new UserSeed(
+              "Daniel",
+              "Scholz",
+              "daniel.scholz@harbor-demo.test",
+              "HarborDemo123!",
               OrganizationRole.REQUESTER));
 }
