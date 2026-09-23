@@ -1,5 +1,6 @@
 package com.harbor.server.features.tickets.controller;
 
+import com.harbor.server.common.dto.PageResponse;
 import com.harbor.server.features.tickets.dto.request.CreateTicketRequest;
 import com.harbor.server.features.tickets.dto.request.GetRequesterTicketsQuery;
 import com.harbor.server.features.tickets.dto.response.RequesterTicketItemResponse;
@@ -8,7 +9,6 @@ import com.harbor.server.features.tickets.service.CreateTicket;
 import com.harbor.server.features.tickets.service.GetRequesterTickets;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +27,7 @@ public class TicketController {
   }
 
   @GetMapping
-  public Page<RequesterTicketItemResponse> getRequesterTickets(
+  public PageResponse<RequesterTicketItemResponse> getRequesterTickets(
       @Valid GetRequesterTicketsQuery queryParams) {
     return getRequesterTickets.execute(queryParams);
   }

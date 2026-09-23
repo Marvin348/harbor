@@ -168,3 +168,20 @@ body {
         cursor: pointer;
     }
 }
+
+.table-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+.table-scrollbar::-webkit-scrollbar {
+    height: 2px;
+}
+
+.table-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+}
+
+.table-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}

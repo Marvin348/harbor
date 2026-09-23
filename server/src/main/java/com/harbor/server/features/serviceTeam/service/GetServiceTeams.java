@@ -1,12 +1,12 @@
 package com.harbor.server.features.serviceTeam.service;
 
+import com.harbor.server.common.dto.PageResponse;
 import com.harbor.server.common.security.CurrentUserProvider;
 import com.harbor.server.common.security.CustomUserDetails;
 import com.harbor.server.features.serviceTeam.dto.request.GetServiceTeamsQuery;
 import com.harbor.server.features.serviceTeam.dto.response.ServiceTeamListItemResponse;
 import com.harbor.server.features.serviceTeam.repository.ServiceTeamRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,7 +19,7 @@ public class GetServiceTeams {
   private final CurrentUserProvider currentUserProvider;
   private final ServiceTeamRepository serviceTeamRepository;
 
-  public Page<ServiceTeamListItemResponse> execute(GetServiceTeamsQuery request) {
+  public PageResponse<ServiceTeamListItemResponse> execute(GetServiceTeamsQuery request) {
     CustomUserDetails userDetails = currentUserProvider.getCurrentUser();
 
     Pageable pageable =
@@ -28,6 +28,7 @@ public class GetServiceTeams {
 
     Long organizationId = userDetails.getOrganizationId();
 
-    return serviceTeamRepository.findServiceTeams(organizationId, pageable, request.search());
+    return PageResponse.from(
+        serviceTeamRepository.findServiceTeams(organizationId, pageable, request.search()));
   }
 }

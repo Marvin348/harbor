@@ -8,7 +8,7 @@ export const AppLayout = () => {
     <SidebarProvider>
       <AppSidebar />
 
-      <SidebarInset>
+      <SidebarInset className="min-w-0">
         <AppHeader />
 
         <main className="p-6">

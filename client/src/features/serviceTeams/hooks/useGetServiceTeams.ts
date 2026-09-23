@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { getServiceTeams } from "@/features/serviceTeams/api/serviceTeam.ts";
-import type { PageServiceTeamListItemResponse } from "@/api/generated/models/page-service-team-list-item-response.ts";
+import type { PageResponseServiceTeamListItemResponse } from "@/api/generated/models/page-response-service-team-list-item-response";
 import { useServiceTeamParams } from "@/features/serviceTeams/hooks/useServiceTeamParams.ts";
 
 export const useGetServiceTeams = () => {
   const { params } = useServiceTeamParams();
 
   const { data, isLoading, isError } = useQuery<
-    PageServiceTeamListItemResponse,
+    PageResponseServiceTeamListItemResponse,
     Error
   >({
     queryFn: () => getServiceTeams(params),
@@ -18,7 +18,7 @@ export const useGetServiceTeams = () => {
     serviceTeams: data?.content ?? [],
     totalElements: data?.totalElements ?? 0,
     totalPages: data?.totalPages ?? 1,
-    currentPage: (data?.number ?? 0) + 1,
+    currentPage: data ? data.number + 1 : 1,
     isLoading,
     isError,
   };

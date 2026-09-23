@@ -93,6 +93,7 @@ export const ServiceTeamOverviewPage = () => {
           <Link
             to="/service-teams/$id/tickets"
             params={{ id }}
+            search={{ page: 1 }}
             className="group flex flex-1 items-center justify-between gap-4 border-t border-border px-4 py-4 first:border-t-0 hover:bg-muted/40 lg:border-t-0 lg:border-l lg:first:border-l-0"
           >
             <div>
@@ -108,6 +109,7 @@ export const ServiceTeamOverviewPage = () => {
           <Link
             to="/service-teams/$id/tickets"
             params={{ id }}
+            search={{ page: 1 }}
             className="group flex flex-1 items-center justify-between gap-4 border-t border-border px-4 py-4 hover:bg-muted/40 lg:border-t-0 lg:border-l"
           >
             <div>
@@ -123,6 +125,7 @@ export const ServiceTeamOverviewPage = () => {
           <Link
             to="/service-teams/$id/tickets"
             params={{ id }}
+            search={{ page: 1 }}
             className="group flex flex-1 items-center justify-between gap-4 border-t border-border px-4 py-4 hover:bg-muted/40 lg:border-t-0 lg:border-l"
           >
             <div>
@@ -138,6 +141,7 @@ export const ServiceTeamOverviewPage = () => {
           <Link
             to="/service-teams/$id/tickets"
             params={{ id }}
+            search={{ page: 1 }}
             className="group flex flex-1 items-center justify-between gap-4 border-t border-border px-4 py-4 hover:bg-muted/40 lg:border-t-0 lg:border-l"
           >
             <div>
@@ -166,6 +170,7 @@ export const ServiceTeamOverviewPage = () => {
             <Link
               to="/service-teams/$id/tickets"
               params={{ id }}
+              search={{ page: 1 }}
               className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               Alle Tickets

@@ -80,10 +80,8 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
         .andExpect(jsonPath("$.totalPages").value(1))
         .andExpect(jsonPath("$.size").value(10))
         .andExpect(jsonPath("$.number").value(0))
-        .andExpect(jsonPath("$.numberOfElements").value(1))
         .andExpect(jsonPath("$.first").value(true))
-        .andExpect(jsonPath("$.last").value(true))
-        .andExpect(jsonPath("$.empty").value(false));
+        .andExpect(jsonPath("$.last").value(true));
   }
 
   @Test
@@ -96,9 +94,7 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content", hasSize(0)))
         .andExpect(jsonPath("$.totalElements").value(0))
-        .andExpect(jsonPath("$.totalPages").value(0))
-        .andExpect(jsonPath("$.numberOfElements").value(0))
-        .andExpect(jsonPath("$.empty").value(true));
+        .andExpect(jsonPath("$.totalPages").value(0));
   }
 
   @Test
@@ -207,7 +203,6 @@ public class GetRequesterTicketsControllerTest extends AbstractControllerIntegra
         .andExpect(jsonPath("$.content", hasSize(1)))
         .andExpect(jsonPath("$.content[0].id").value(oldestTicket.getId()))
         .andExpect(jsonPath("$.number").value(1))
-        .andExpect(jsonPath("$.numberOfElements").value(1))
         .andExpect(jsonPath("$.first").value(false))
         .andExpect(jsonPath("$.last").value(true));
   }

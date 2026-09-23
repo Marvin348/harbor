@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/apiClient.ts";
 import type { ServiceTeamResponse } from "@/api/generated/models/service-team-response.ts";
 import type { CreateServiceTeamFields } from "@/features/serviceTeams/schema/createServiceTeamSchema.ts";
-import type { PageServiceTeamListItemResponse } from "@/api/generated/models/page-service-team-list-item-response.ts";
+import type { PageResponseServiceTeamListItemResponse } from "@/api/generated/models/page-response-service-team-list-item-response.ts";
 import type { ServiceTeamParams } from "@/features/serviceTeams/schema/serviceTeamParamsSchema.ts";
 import { PAGE_LIMIT } from "@/shared/constants/pageLimits.ts";
 import type { ServiceTeamOptionResponse } from "@/api/generated/models/service-team-option-response.ts";
@@ -16,7 +16,7 @@ export const createServiceTeam = async (
 
 export const getServiceTeams = async (
   params: ServiceTeamParams,
-): Promise<PageServiceTeamListItemResponse> => {
+): Promise<PageResponseServiceTeamListItemResponse> => {
   const res = await apiClient.get("service-teams", {
     params: {
       page: params.page,

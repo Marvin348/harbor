@@ -37,6 +37,8 @@ public class SecurityConfig {
                     .hasRole("ORGANIZATION_ADMIN")
                     .requestMatchers(HttpMethod.POST, "/services")
                     .hasRole("ORGANIZATION_ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/service-teams/{id}/tickets")
+                    .hasAnyRole("ORGANIZATION_ADMIN", "AGENT")
                     .anyRequest()
                     .authenticated())
         .exceptionHandling(
