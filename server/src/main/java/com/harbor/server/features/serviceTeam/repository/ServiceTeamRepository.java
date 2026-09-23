@@ -19,6 +19,8 @@ public interface ServiceTeamRepository extends JpaRepository<ServiceTeam, Long> 
 
   Optional<ServiceTeam> findByIdAndOrganizationId(Long id, Long organizationId);
 
+  boolean existsByIdAndOrganizationId(Long id, Long organizationId);
+
   List<ServiceTeamOptionResponse> findByOrganizationIdOrderByNameAsc(Long organizationId);
 
   @Query(
@@ -56,7 +58,7 @@ public interface ServiceTeamRepository extends JpaRepository<ServiceTeam, Long> 
       Long organizationId, Pageable pageable, String search);
 
   @Query(
-"""
+      """
         SELECT NEW com.harbor.server.features.serviceTeam.dto.response.ServiceTeamDetailsResponse(
         st.id,
         st.name,

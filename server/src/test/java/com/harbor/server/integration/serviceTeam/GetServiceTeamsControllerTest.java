@@ -43,10 +43,8 @@ public class GetServiceTeamsControllerTest extends AbstractControllerIntegration
         .andExpect(jsonPath("$.totalPages").value(1))
         .andExpect(jsonPath("$.size").value(10))
         .andExpect(jsonPath("$.number").value(0))
-        .andExpect(jsonPath("$.numberOfElements").value(1))
         .andExpect(jsonPath("$.first").value(true))
-        .andExpect(jsonPath("$.last").value(true))
-        .andExpect(jsonPath("$.empty").value(false));
+        .andExpect(jsonPath("$.last").value(true));
   }
 
   @Test
@@ -63,10 +61,8 @@ public class GetServiceTeamsControllerTest extends AbstractControllerIntegration
         .andExpect(jsonPath("$.content", hasSize(0)))
         .andExpect(jsonPath("$.totalElements").value(0))
         .andExpect(jsonPath("$.totalPages").value(0))
-        .andExpect(jsonPath("$.numberOfElements").value(0))
         .andExpect(jsonPath("$.first").value(true))
-        .andExpect(jsonPath("$.last").value(true))
-        .andExpect(jsonPath("$.empty").value(true));
+        .andExpect(jsonPath("$.last").value(true));
   }
 
   @Test
@@ -115,7 +111,6 @@ public class GetServiceTeamsControllerTest extends AbstractControllerIntegration
         .andExpect(jsonPath("$.totalElements").value(3))
         .andExpect(jsonPath("$.totalPages").value(2))
         .andExpect(jsonPath("$.number").value(0))
-        .andExpect(jsonPath("$.numberOfElements").value(2))
         .andExpect(jsonPath("$.first").value(true))
         .andExpect(jsonPath("$.last").value(false));
 
@@ -129,7 +124,6 @@ public class GetServiceTeamsControllerTest extends AbstractControllerIntegration
         .andExpect(jsonPath("$.content", hasSize(1)))
         .andExpect(jsonPath("$.content[0].id").value(oldestTeam.getId()))
         .andExpect(jsonPath("$.number").value(1))
-        .andExpect(jsonPath("$.numberOfElements").value(1))
         .andExpect(jsonPath("$.first").value(false))
         .andExpect(jsonPath("$.last").value(true));
   }

@@ -1,5 +1,6 @@
 package com.harbor.server.features.serviceTeam.controller;
 
+import com.harbor.server.common.dto.PageResponse;
 import com.harbor.server.features.serviceTeam.dto.request.CreateServiceTeamRequest;
 import com.harbor.server.features.serviceTeam.dto.request.GetServiceTeamsQuery;
 import com.harbor.server.features.serviceTeam.dto.response.ServiceTeamDetailsResponse;
@@ -10,7 +11,6 @@ import com.harbor.server.features.serviceTeam.service.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +33,7 @@ public class ServiceTeamController {
   }
 
   @GetMapping
-  public Page<ServiceTeamListItemResponse> getServiceTeams(
+  public PageResponse<ServiceTeamListItemResponse> getServiceTeams(
       @Valid GetServiceTeamsQuery queryParams) {
     return getServiceTeams.execute(queryParams);
   }

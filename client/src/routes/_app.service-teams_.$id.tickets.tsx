@@ -1,9 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import { ServiceTeamDetailsTicketsPage } from "@/features/serviceTeams/pages/ServiceTeamDetailsTicketsPage.tsx";
+import { serviceTeamTicketParamsSchema } from "@/features/serviceTeams/schema/serviceTeamTicketParamsSchema.ts";
 
-export const Route = createFileRoute('/_app/service-teams_/$id/tickets')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return <div>Hello "/_app/service-teams/$id/tickets"!</div>
-}
+export const Route = createFileRoute("/_app/service-teams_/$id/tickets")({
+  validateSearch: serviceTeamTicketParamsSchema,
+  component: ServiceTeamDetailsTicketsPage,
+});
