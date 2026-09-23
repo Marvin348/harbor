@@ -15,9 +15,9 @@ export const useGetServiceTeams = () => {
   });
 
   return {
-    serviceTeams: data?.content,
-    totalElements: data?.totalElements,
-    totalPages: data?.totalPages,
+    serviceTeams: data?.content ?? [],
+    totalElements: data?.totalElements ?? 0,
+    totalPages: data?.totalPages ?? 1,
     currentPage: data ? data.number + 1 : 1,
     isLoading,
     isError,
