@@ -1,5 +1,6 @@
 package com.harbor.server.features.tickets.repository;
 
+import com.harbor.server.features.tickets.dto.response.AgentTicketDetailsResponse;
 import com.harbor.server.features.tickets.dto.response.RequesterTicketItemResponse;
 import com.harbor.server.features.tickets.dto.response.ServiceTeamTicketListItemResponse;
 import com.harbor.server.features.tickets.model.Ticket;
@@ -84,4 +85,47 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
       String search,
       TicketStatus status,
       TicketPriority priority);
+
+  @Query(
+      """
+         SELECT new com.harbor.server.features.tickets.dto.response.AgentTicketDetailsResponse(
+             t.id,
+             t.subject,
+             t.description,
+             t.status,
+             t.priority,
+             t.impact,
+             t.urgency,
+             t.businessCriticality,
+             t.requester.id,
+             CONCAT(t.requester.firstName, ' ', t.requester.lastName),
+             t.requester.email,
+             s.id,
+             s.name,
+             st.id,
+             st.name,
+             CASE
+                WHEN a.id IS NULL THEN NULL
+                ELSE CONCAT(a.firstName, ' ', a.lastName)
+             END,
+             t.createdAt,
+             t.updatedAt)
+         FROM Ticket t
+         JOIN t.service s
+         JOIN t.serviceTeam st
+         LEFT JOIN t.assignedAgent a
+         WHERE t.id = :ticketId
+         AND t.organization.id = :organizationId
+         AND (
+              :isAdmin = true
+              OR EXISTS (
+                  SELECT m
+                  FROM ServiceTeamMember m
+                  WHERE m.serviceTeam.id = st.id
+                  AND m.user.id = :userId
+              )
+         )
+         """)
+  Optional<AgentTicketDetailsResponse> findAgentTicketDetails(
+      Long ticketId, Long organizationId, Long userId, boolean isAdmin);
 }
