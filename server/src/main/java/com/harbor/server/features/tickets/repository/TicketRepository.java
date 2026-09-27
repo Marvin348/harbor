@@ -1,14 +1,16 @@
 package com.harbor.server.features.tickets.repository;
 
-import com.harbor.server.features.tickets.dto.response.AgentTicketDetailsResponse;
+import com.harbor.server.features.tickets.agent.dto.response.AgentTicketDetailsResponse;
 import com.harbor.server.features.tickets.dto.response.RequesterTicketItemResponse;
 import com.harbor.server.features.tickets.dto.response.ServiceTeamTicketListItemResponse;
+import com.harbor.server.features.tickets.dto.response.TicketResponse;
 import com.harbor.server.features.tickets.model.Ticket;
 import com.harbor.server.features.tickets.model.TicketPriority;
 import com.harbor.server.features.tickets.model.TicketStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
@@ -88,7 +90,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
   @Query(
       """
-         SELECT new com.harbor.server.features.tickets.dto.response.AgentTicketDetailsResponse(
+         SELECT new com.harbor.server.features.tickets.agent.dto.response.AgentTicketDetailsResponse(
              t.id,
              t.subject,
              t.description,
@@ -128,4 +130,38 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
          """)
   Optional<AgentTicketDetailsResponse> findAgentTicketDetails(
       Long ticketId, Long organizationId, Long userId, boolean isAdmin);
+
+  @Modifying
+  @Query(
+      value =
+          """
+          UPDATE tickets AS t
+          SET assigned_agent_id = :agentId
+          WHERE id = :ticketId
+          AND organization_id = :organizationId
+          AND assigned_agent_id IS NULL
+          AND EXISTS(
+              SELECT 1
+              FROM service_team_members stm
+              WHERE stm.service_team_id = t.service_team_id
+              AND stm.user_id = :agentId
+          )
+          """,
+      nativeQuery = true)
+  int claimTicket(Long ticketId, Long organizationId, Long agentId);
+
+  @Query(
+"""
+          SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
+          FROM Ticket t
+          WHERE t.id = :ticketId
+          AND t.organization.id = :organizationId
+          AND EXISTS (
+              SELECT m.id
+              FROM ServiceTeamMember m
+              WHERE m.serviceTeam.id = t.serviceTeam.id
+              AND m.user.id = :agentId
+          )
+""")
+  boolean existsAccessibleTicketForAgent(Long ticketId, Long organizationId, Long agentId);
 }

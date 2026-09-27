@@ -1,4 +1,4 @@
-package com.harbor.server.features.tickets.dto.response;
+package com.harbor.server.features.tickets.agent.dto.response;
 
 import com.harbor.server.features.tickets.model.*;
 import jakarta.validation.constraints.NotNull;
