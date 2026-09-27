@@ -1,9 +1,9 @@
-package com.harbor.server.features.tickets.service;
+package com.harbor.server.features.tickets.agent.service;
 
 import com.harbor.server.common.exception.NotFoundException;
 import com.harbor.server.common.security.CurrentUserProvider;
 import com.harbor.server.common.security.CustomUserDetails;
-import com.harbor.server.features.tickets.dto.response.AgentTicketDetailsResponse;
+import com.harbor.server.features.tickets.agent.dto.response.AgentTicketDetailsResponse;
 import com.harbor.server.features.tickets.repository.TicketRepository;
 import com.harbor.server.features.user.model.OrganizationRole;
 import lombok.RequiredArgsConstructor;

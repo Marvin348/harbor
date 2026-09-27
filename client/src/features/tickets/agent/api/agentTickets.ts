@@ -7,3 +7,8 @@ export const getAgentTicketDetails = async (
   const res = await apiClient.get(`/tickets/${ticketId}/agent`);
   return res.data;
 };
+
+export const claimTicket = async (ticketId: number) => {
+  const res = await apiClient.patch(`/tickets/${ticketId}/claim`);
+  return res.data;
+};

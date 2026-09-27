@@ -10,6 +10,11 @@ import type { AgentTicketDetailsResponse } from "@/api/generated/models/agent-ti
 import { formatDate } from "@/shared/utils/formatDate.ts";
 import { TICKET_STATUS_LABELS } from "@/features/tickets/constants/ticketStatusLabels.ts";
 import { TICKET_PRIORITY_LABELS } from "@/features/tickets/constants/ticketPriorityLabels.ts";
+import { useClaimTicket } from "@/features/tickets/agent/hooks/useClaimTicket.ts";
+import { showSuccessToast } from "@/common/showSuccessToast.ts";
+import { showErrorToast } from "@/common/showErrorToast.ts";
+import { claimTicketErrorMessage } from "@/features/tickets/agent/errors/claimTicketErrorMessage.ts";
+import { Spinner } from "@/components/ui/spinner.tsx";
 
 type AgentTicketHeaderProps = {
   agentTicketDetails: AgentTicketDetailsResponse;
@@ -18,6 +23,22 @@ type AgentTicketHeaderProps = {
 export const AgentTicketHeader = ({
   agentTicketDetails,
 }: AgentTicketHeaderProps) => {
+  const { mutate, isPending } = useClaimTicket();
+
+  const onClaimTicket = () => {
+    mutate(agentTicketDetails.id, {
+      onSuccess: () => {
+        showSuccessToast(
+          `Du hast Ticket #${agentTicketDetails.id} übernommen.`,
+        );
+      },
+
+      onError: (error) => {
+        showErrorToast(claimTicketErrorMessage(error));
+      },
+    });
+  };
+
   return (
     <header className="border-b border-border pb-6">
       <Link
@@ -57,10 +78,12 @@ export const AgentTicketHeader = ({
         </div>
 
         <div className="flex shrink-0 flex-wrap items-center gap-2">
-          <Button type="button">
-            <Check />
-            Ticket übernehmen
-          </Button>
+          {agentTicketDetails.assignedAgentName ? null : (
+            <Button type="button" onClick={onClaimTicket} disabled={isPending}>
+              {isPending ? <Spinner /> : <Check />}
+              Ticket übernehmen
+            </Button>
+          )}
           <Button type="button" variant="outline">
             <MessageSquareText />
             Kommunikation
