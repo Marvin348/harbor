@@ -194,4 +194,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
           )
 """)
   boolean existsAccessibleTicketForAgent(Long ticketId, Long organizationId, Long agentId);
+
+  boolean existsByIdAndOrganizationIdAndRequesterId(
+      Long ticketId, Long organizationId, Long requesterId);
+
+  boolean existsByIdAndOrganizationId(Long id, Long organizationId);
 }

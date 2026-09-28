@@ -7,6 +7,8 @@ import com.harbor.server.features.serviceTeam.model.ServiceTeamMember;
 import com.harbor.server.features.serviceTeam.repository.ServiceTeamMemberRepository;
 import com.harbor.server.features.serviceTeam.repository.ServiceTeamRepository;
 import com.harbor.server.features.services.repository.ServiceRepository;
+import com.harbor.server.features.tickets.communication.message.model.TicketMessage;
+import com.harbor.server.features.tickets.communication.message.repository.TicketMessageRepository;
 import com.harbor.server.features.tickets.model.Ticket;
 import com.harbor.server.features.tickets.repository.TicketRepository;
 import com.harbor.server.features.user.model.User;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +36,7 @@ public class SeedDataService {
   private final ServiceTeamMemberRepository serviceTeamMemberRepository;
   private final ServiceRepository serviceRepository;
   private final TicketRepository ticketRepository;
+  private final TicketMessageRepository ticketMessageRepository;
   private final PasswordEncoder passwordEncoder;
 
   @Value("${app.seed.enabled}")
@@ -69,12 +73,15 @@ public class SeedDataService {
                         new ServiceLookupKey(service.getName(), service.getServiceTeam().getName()),
                     service -> service));
 
-    seedTickets(organization, usersByEmail, servicesByNameAndTeam, serviceTeamsByName);
+    Map<String, Ticket> ticketsByKey =
+        seedTickets(organization, usersByEmail, servicesByNameAndTeam, serviceTeamsByName);
+    seedTicketMessages(ticketsByKey, usersByEmail);
 
     System.out.println("Seed data service started...");
   }
 
   private void clearDatabase() {
+    ticketMessageRepository.deleteAllInBatch();
     ticketRepository.deleteAllInBatch();
     serviceRepository.deleteAllInBatch();
     serviceTeamMemberRepository.deleteAllInBatch();
@@ -152,12 +159,15 @@ public class SeedDataService {
     return services;
   }
 
-  private void seedTickets(
+  private Map<String, Ticket> seedTickets(
       Organization organization,
       Map<String, User> usersByEmail,
       Map<ServiceLookupKey, com.harbor.server.features.services.model.Service>
           servicesByNameAndTeam,
       Map<String, ServiceTeam> serviceTeamsByName) {
+
+    Map<String, Ticket> ticketsByKey = new HashMap<>();
+
     for (TicketSeedData.TicketSeed seed : TicketSeedData.TICKETS) {
 
       User requester = usersByEmail.get(seed.requesterEmail());
@@ -177,9 +187,35 @@ public class SeedDataService {
               seed.priority(),
               seed.impact(),
               seed.urgency(),
-              seed.businessCriticality());
+              seed.businessCriticality(),
+              seed.status(),
+              seed.createdAt(),
+              seed.updatedAt());
 
-      ticketRepository.save(ticket);
+      Ticket savedTicket = ticketRepository.save(ticket);
+
+      ticketsByKey.put(seed.key(), savedTicket);
+    }
+
+    return ticketsByKey;
+  }
+
+  private void seedTicketMessages(
+      Map<String, Ticket> ticketsByKey, Map<String, User> usersByEmail) {
+    for (TicketMessageSeedData.TicketMessageSeed seed : TicketMessageSeedData.TICKET_MESSAGES) {
+      Ticket ticket = ticketsByKey.get(seed.ticketKey());
+      User author = usersByEmail.get(seed.authorEmail());
+
+      TicketMessage ticketMessage =
+          new TicketMessage(
+              ticket,
+              ticket.getOrganization(),
+              author,
+              seed.type(),
+              seed.body(),
+              seed.createdAt());
+
+      ticketMessageRepository.save(ticketMessage);
     }
   }
 

@@ -4,6 +4,7 @@ import com.harbor.server.features.organization.repository.OrganizationRepository
 import com.harbor.server.features.serviceTeam.repository.ServiceTeamMemberRepository;
 import com.harbor.server.features.serviceTeam.repository.ServiceTeamRepository;
 import com.harbor.server.features.services.repository.ServiceRepository;
+import com.harbor.server.features.tickets.communication.message.repository.TicketMessageRepository;
 import com.harbor.server.features.tickets.repository.TicketRepository;
 import com.harbor.server.features.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +39,7 @@ public abstract class AbstractIntegrationTest {
   }
 
   @Autowired private TicketRepository ticketRepository;
+  @Autowired private TicketMessageRepository ticketMessageRepository;
   @Autowired private ServiceTeamRepository serviceTeamRepository;
   @Autowired private ServiceRepository serviceRepository;
   @Autowired private UserRepository userRepository;
@@ -46,6 +48,7 @@ public abstract class AbstractIntegrationTest {
 
   @BeforeEach
   protected void cleanDatabase() {
+    ticketMessageRepository.deleteAllInBatch();
     ticketRepository.deleteAllInBatch();
     serviceRepository.deleteAllInBatch();
     serviceTeamMemberRepository.deleteAllInBatch();

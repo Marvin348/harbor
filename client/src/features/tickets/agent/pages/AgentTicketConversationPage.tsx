@@ -3,7 +3,7 @@ import { AgentTicketConversationPanel } from "@/features/tickets/agent/component
 
 export const AgentTicketConversationPage = () => {
   return (
-    <div className="grid gap-20 grid-cols-[minmax(0,1fr)_3rem] overflow-hidden rounded-lg">
+    <div className="grid grid-cols-[minmax(0,1fr)_3rem] gap-10 justify-between overflow-hidden rounded-lg">
       <AgentTicketConversationPanel />
       <AgentTicketConversationAside />
     </div>
