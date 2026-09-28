@@ -83,8 +83,12 @@ public class Ticket {
   @PrePersist
   protected void onCreate() {
     LocalDateTime now = LocalDateTime.now();
-    createdAt = now;
-    updatedAt = now;
+    if (createdAt == null) {
+      createdAt = now;
+    }
+    if (updatedAt == null) {
+      updatedAt = createdAt;
+    }
   }
 
   @PreUpdate
@@ -114,5 +118,35 @@ public class Ticket {
     this.urgency = urgency;
     this.businessCriticality = businessCriticality;
     this.status = TicketStatus.OPEN;
+  }
+
+  public Ticket(
+      Organization organization,
+      ServiceTeam serviceTeam,
+      Service service,
+      User requester,
+      String subject,
+      String description,
+      TicketPriority priority,
+      TicketImpact impact,
+      TicketUrgency urgency,
+      TicketBusinessCriticality businessCriticality,
+      TicketStatus status,
+      LocalDateTime createdAt,
+      LocalDateTime updatedAt) {
+    this(
+        organization,
+        serviceTeam,
+        service,
+        requester,
+        subject,
+        description,
+        priority,
+        impact,
+        urgency,
+        businessCriticality);
+    this.status = status;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 }

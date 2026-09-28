@@ -1,11 +1,11 @@
-import { AgentTicketActivitySection } from "@/features/tickets/agent/component/AgentTicketActivitySection.tsx";
-import { AgentTicketClassificationSection } from "@/features/tickets/agent/component/AgentTicketClassificationSection.tsx";
-import { AgentTicketConversationSection } from "@/features/tickets/agent/component/AgentTicketConversationSection.tsx";
-import { AgentTicketCopyIdAction } from "@/features/tickets/agent/component/AgentTicketCopyIdAction.tsx";
-import { AgentTicketInternalWorkSection } from "@/features/tickets/agent/component/AgentTicketInternalWorkSection.tsx";
-import { AgentTicketRequesterSection } from "@/features/tickets/agent/component/AgentTicketRequesterSection.tsx";
-import { AgentTicketRequestSection } from "@/features/tickets/agent/component/AgentTicketRequestSection.tsx";
-import { AgentTicketSlaSection } from "@/features/tickets/agent/component/AgentTicketSlaSection.tsx";
+import { AgentTicketActivitySection } from "@/features/tickets/agent/components/details/AgentTicketActivitySection.tsx";
+import { AgentTicketClassificationSection } from "@/features/tickets/agent/components/details/AgentTicketClassificationSection.tsx";
+import { AgentTicketConversationSection } from "@/features/tickets/agent/components/details/AgentTicketConversationSection.tsx";
+import { AgentTicketCopyIdAction } from "@/features/tickets/agent/components/details/AgentTicketCopyIdAction.tsx";
+import { AgentTicketInternalWorkSection } from "@/features/tickets/agent/components/details/AgentTicketInternalWorkSection.tsx";
+import { AgentTicketRequesterSection } from "@/features/tickets/agent/components/details/AgentTicketRequesterSection.tsx";
+import { AgentTicketRequestSection } from "@/features/tickets/agent/components/details/AgentTicketRequestSection.tsx";
+import { AgentTicketSlaSection } from "@/features/tickets/agent/components/details/AgentTicketSlaSection.tsx";
 import type { AgentTicketDetailsResponse } from "@/api/generated/models/agent-ticket-details-response.ts";
 
 type AgentTicketWorkspaceProps = {

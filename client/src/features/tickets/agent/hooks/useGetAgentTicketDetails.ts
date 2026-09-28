@@ -8,7 +8,7 @@ export const useGetAgentTicketDetails = (ticketId: number) => {
     Error
   >({
     queryFn: () => getAgentTicketDetails(ticketId),
-    queryKey: ["tickets", ticketId, "agent"],
+    queryKey: ["tickets", ticketId, "details"],
   });
 
   return { agentTicketDetails: data, isLoading, isError, refetch };

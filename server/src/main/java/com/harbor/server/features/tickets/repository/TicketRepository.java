@@ -1,6 +1,7 @@
 package com.harbor.server.features.tickets.repository;
 
 import com.harbor.server.features.tickets.agent.dto.response.AgentTicketDetailsResponse;
+import com.harbor.server.features.tickets.agent.dto.response.AgentTicketHeaderResponse;
 import com.harbor.server.features.tickets.dto.response.RequesterTicketItemResponse;
 import com.harbor.server.features.tickets.dto.response.ServiceTeamTicketListItemResponse;
 import com.harbor.server.features.tickets.dto.response.TicketResponse;
@@ -131,6 +132,35 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
   Optional<AgentTicketDetailsResponse> findAgentTicketDetails(
       Long ticketId, Long organizationId, Long userId, boolean isAdmin);
 
+  @Query(
+      """
+         SELECT new com.harbor.server.features.tickets.agent.dto.response.AgentTicketHeaderResponse(
+             t.id,
+             t.subject,
+             t.status,
+             t.priority,
+             CASE
+                WHEN a.id IS NULL THEN NULL
+                ELSE CONCAT(a.firstName, ' ', a.lastName)
+             END)
+         FROM Ticket t
+         LEFT JOIN t.assignedAgent a
+         WHERE t.id = :ticketId
+         AND t.organization.id = :organizationId
+         AND (
+              :isAdmin = true
+              OR EXISTS (
+                  SELECT m.id
+                  FROM ServiceTeamMember m
+                  WHERE m.serviceTeam.id = t.serviceTeam.id
+                  AND m.user.id = :agentId
+                  AND m.organization.id = :organizationId
+              )
+         )
+         """)
+  Optional<AgentTicketHeaderResponse> findAgentTicketHeader(
+      Long ticketId, Long organizationId, Long agentId, boolean isAdmin);
+
   @Modifying
   @Query(
       value =
@@ -164,4 +194,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
           )
 """)
   boolean existsAccessibleTicketForAgent(Long ticketId, Long organizationId, Long agentId);
+
+  boolean existsByIdAndOrganizationIdAndRequesterId(
+      Long ticketId, Long organizationId, Long requesterId);
+
+  boolean existsByIdAndOrganizationId(Long id, Long organizationId);
 }
