@@ -3,10 +3,13 @@ import { getTicketMessages } from "@/features/tickets/messages/api/ticketMessage
 import type { TicketMessageResponse } from "@/api/generated/models/ticket-message-response.ts";
 
 export const useGetTicketMessages = (ticketId: number) => {
-  const { data, isLoading, error } = useQuery<TicketMessageResponse[], Error>({
+  const { data, isLoading, isError, refetch } = useQuery<
+    TicketMessageResponse[],
+    Error
+  >({
     queryFn: () => getTicketMessages(ticketId),
     queryKey: ["tickets", ticketId, "messages"],
   });
 
-  return { ticketMessages: data, isLoading, error };
+  return { ticketMessages: data, isLoading, isError, refetch };
 };

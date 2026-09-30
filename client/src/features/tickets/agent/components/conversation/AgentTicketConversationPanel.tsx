@@ -1,23 +1,21 @@
-import { AgentTicketMessageComposer } from "@/features/tickets/agent/components/conversation/AgentTicketMessageComposer.tsx";
-import { AgentTicketMessageList } from "@/features/tickets/agent/components/conversation/AgentTicketMessageList.tsx";
-import { useGetTicketMessages } from "@/features/tickets/messages/hooks/useGetTicketMessages.ts";
+import { TicketMessageComposer } from "@/features/tickets/messages/components/TicketMessageComposer.tsx";
+import { TicketMessageList } from "@/features/tickets/messages/components/TicketMessageList.tsx";
 import { Route } from "@/routes/_app.tickets_.$id.tsx";
+import type { TicketMessageResponse } from "@/api/generated/models/ticket-message-response.ts";
 
-export const AgentTicketConversationPanel = () => {
+type AgentTicketConversationPanelProps = {
+  ticketMessages: TicketMessageResponse[];
+};
+
+export const AgentTicketConversationPanel = ({
+  ticketMessages,
+}: AgentTicketConversationPanelProps) => {
   const { id } = Route.useParams();
-  const {
-    ticketMessages = [],
-    isLoading,
-    error,
-  } = useGetTicketMessages(Number(id));
-
-  if (isLoading) return <div>loading</div>;
-  if (error) return <div>error</div>;
 
   return (
-    <section className="flex min-w-0 flex-col">
-      <AgentTicketMessageList ticketMessages={ticketMessages} />
-      <AgentTicketMessageComposer />
+    <section className="flex min-h-0 min-w-0 flex-col">
+      <TicketMessageList ticketMessages={ticketMessages} />
+      <TicketMessageComposer ticketId={Number(id)} />
     </section>
   );
 };
