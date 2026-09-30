@@ -15,11 +15,11 @@ export const AgentTicketLayout = () => {
     return <AgentTicketDetailsErrorState onRetry={() => void refetch()} />;
 
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       <AgentTicketHeader agentTicketHeader={agentTicketHeader} />
-      <div className="mt-6">
+      <div className="mt-6 flex min-h-0 flex-1 flex-col">
         <Outlet />
       </div>
-    </>
+    </div>
   );
 };

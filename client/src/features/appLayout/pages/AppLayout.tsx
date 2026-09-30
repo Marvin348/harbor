@@ -5,13 +5,13 @@ import { AppHeader } from "@/features/appLayout/components/AppHeader.tsx";
 
 export const AppLayout = () => {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="h-svh overflow-hidden">
       <AppSidebar />
 
-      <SidebarInset className="min-w-0">
+      <SidebarInset className="min-h-0 min-w-0">
         <AppHeader />
 
-        <main className="p-6">
+        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto p-6">
           <Outlet />
         </main>
       </SidebarInset>

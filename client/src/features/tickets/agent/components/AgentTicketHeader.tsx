@@ -40,7 +40,7 @@ export const AgentTicketHeader = ({
   };
 
   return (
-    <header className="border-b border-border">
+    <header className="shrink-0 border-b border-border">
       <div className="grid gap-4 pb-3 lg:grid-cols-[minmax(10rem,1fr)_minmax(0,2fr)_minmax(10rem,1fr)] lg:items-start">
         <Link
           to="/tickets"

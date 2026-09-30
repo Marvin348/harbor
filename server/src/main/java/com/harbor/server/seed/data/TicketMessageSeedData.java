@@ -87,10 +87,34 @@ public class TicketMessageSeedData {
               "Die Duplikate entstehen beim Zusammenfuehren zweier Kundensegmente. Wir pruefen gerade, ob nur der Export oder bereits die Quelle betroffen ist."),
           message(
               "TICKET_11",
+              "jan.vogel@harbor-demo.test",
+              REPLY,
+              "2026-09-27T05:43:00",
+              "Seit etwa 05:20 Uhr brauchen Login und Suche teilweise ueber 20 Sekunden. Drei Kollegen sehen dasselbe Verhalten, ein Neustart des Browsers hat nichts geaendert."),
+          message(
+              "TICKET_11",
               "paul.neumann@harbor-demo.test",
               INTERNAL_NOTE,
               "2026-09-27T06:02:00",
               "CPU unauffaellig, aber die Datenbankverbindungen laufen seit 04:50 Uhr langsam voll. Pool-Metriken fuer das Incident-Review sichern."),
+          message(
+              "TICKET_11",
+              "jonas.weber@harbor-demo.test",
+              REPLY,
+              "2026-09-27T06:18:00",
+              "Danke fuer die Details. Wir sehen die erhoehte Antwortzeit ebenfalls und untersuchen gerade die Datenbankverbindungen. Bitte lass die Anwendung geoeffnet und fuehre vorerst keine Sammelimporte aus."),
+          message(
+              "TICKET_11",
+              "jan.vogel@harbor-demo.test",
+              REPLY,
+              "2026-09-27T06:44:00",
+              "Verstanden. Der normale Aufruf funktioniert noch, aber beim Oeffnen grosser Kundenakten dreht der Ladekreis gefuehlt bis zur naechsten Jahreszeit. Sammelimporte sind gestoppt."),
+          message(
+              "TICKET_11",
+              "jonas.weber@harbor-demo.test",
+              REPLY,
+              "2026-09-27T09:12:00",
+              "Wir haben einen fehlerhaften Verbindungspool neu konfiguriert. Die Antwortzeiten sind seit 08:55 Uhr wieder normal. Kannst du bitte noch einmal eine grosse Kundenakte und die Suche testen?"),
           message(
               "TICKET_12",
               "david.becker@harbor-demo.test",
