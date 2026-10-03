@@ -22,6 +22,7 @@ import { Route as PublicRegisterRouteImport } from './routes/_public.register'
 import { Route as AppServiceTeamsIdRouteImport } from './routes/_app.service-teams_.$id'
 import { Route as AppSettingsMemberSettingsRouteImport } from './routes/_app.settings.member-settings'
 import { Route as AppSettingsOrganizationRouteImport } from './routes/_app.settings.organization'
+import { Route as AppSettingsSlaPolicyRouteImport } from './routes/_app.settings.sla-policy'
 import { Route as AppTicketsIdRouteImport } from './routes/_app.tickets_.$id'
 import { Route as AppServiceTeamsIdIndexRouteImport } from './routes/_app.service-teams_.$id.index'
 import { Route as AppServiceTeamsIdAgentsRouteImport } from './routes/_app.service-teams_.$id.agents'
@@ -96,6 +97,11 @@ const AppSettingsOrganizationRoute = AppSettingsOrganizationRouteImport.update({
   path: '/organization',
   getParentRoute: () => AppSettingsRoute,
 } as any)
+const AppSettingsSlaPolicyRoute = AppSettingsSlaPolicyRouteImport.update({
+  id: '/sla-policy',
+  path: '/sla-policy',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
 const AppTicketsIdRoute = AppTicketsIdRouteImport.update({
   id: '/tickets_/$id',
   path: '/tickets/$id',
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/service-teams/$id': typeof AppServiceTeamsIdRouteWithChildren
   '/settings/member-settings': typeof AppSettingsMemberSettingsRoute
   '/settings/organization': typeof AppSettingsOrganizationRoute
+  '/settings/sla-policy': typeof AppSettingsSlaPolicyRoute
   '/tickets/$id': typeof AppTicketsIdRouteWithChildren
   '/service-teams/$id/agents': typeof AppServiceTeamsIdAgentsRoute
   '/service-teams/$id/services': typeof AppServiceTeamsIdServicesRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/register': typeof PublicRegisterRoute
   '/settings/member-settings': typeof AppSettingsMemberSettingsRoute
   '/settings/organization': typeof AppSettingsOrganizationRoute
+  '/settings/sla-policy': typeof AppSettingsSlaPolicyRoute
   '/service-teams/$id/agents': typeof AppServiceTeamsIdAgentsRoute
   '/service-teams/$id/services': typeof AppServiceTeamsIdServicesRoute
   '/service-teams/$id/tickets': typeof AppServiceTeamsIdTicketsRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/_app/service-teams_/$id': typeof AppServiceTeamsIdRouteWithChildren
   '/_app/settings/member-settings': typeof AppSettingsMemberSettingsRoute
   '/_app/settings/organization': typeof AppSettingsOrganizationRoute
+  '/_app/settings/sla-policy': typeof AppSettingsSlaPolicyRoute
   '/_app/tickets_/$id': typeof AppTicketsIdRouteWithChildren
   '/_app/service-teams_/$id/agents': typeof AppServiceTeamsIdAgentsRoute
   '/_app/service-teams_/$id/services': typeof AppServiceTeamsIdServicesRoute
@@ -225,6 +234,7 @@ export interface FileRouteTypes {
     | '/service-teams/$id'
     | '/settings/member-settings'
     | '/settings/organization'
+    | '/settings/sla-policy'
     | '/tickets/$id'
     | '/service-teams/$id/agents'
     | '/service-teams/$id/services'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/settings/member-settings'
     | '/settings/organization'
+    | '/settings/sla-policy'
     | '/service-teams/$id/agents'
     | '/service-teams/$id/services'
     | '/service-teams/$id/tickets'
@@ -269,6 +280,7 @@ export interface FileRouteTypes {
     | '/_app/service-teams_/$id'
     | '/_app/settings/member-settings'
     | '/_app/settings/organization'
+    | '/_app/settings/sla-policy'
     | '/_app/tickets_/$id'
     | '/_app/service-teams_/$id/agents'
     | '/_app/service-teams_/$id/services'
@@ -378,6 +390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsOrganizationRouteImport
       parentRoute: typeof AppSettingsRoute
     }
+    '/_app/settings/sla-policy': {
+      id: '/_app/settings/sla-policy'
+      path: '/sla-policy'
+      fullPath: '/settings/sla-policy'
+      preLoaderRoute: typeof AppSettingsSlaPolicyRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
     '/_app/tickets_/$id': {
       id: '/_app/tickets_/$id'
       path: '/tickets/$id'
@@ -447,11 +466,13 @@ declare module '@tanstack/react-router' {
 interface AppSettingsRouteChildren {
   AppSettingsMemberSettingsRoute: typeof AppSettingsMemberSettingsRoute
   AppSettingsOrganizationRoute: typeof AppSettingsOrganizationRoute
+  AppSettingsSlaPolicyRoute: typeof AppSettingsSlaPolicyRoute
 }
 
 const AppSettingsRouteChildren: AppSettingsRouteChildren = {
   AppSettingsMemberSettingsRoute: AppSettingsMemberSettingsRoute,
   AppSettingsOrganizationRoute: AppSettingsOrganizationRoute,
+  AppSettingsSlaPolicyRoute: AppSettingsSlaPolicyRoute,
 }
 
 const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
