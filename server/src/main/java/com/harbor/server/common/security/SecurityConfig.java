@@ -45,6 +45,10 @@ public class SecurityConfig {
                     .hasAnyRole("ORGANIZATION_ADMIN", "AGENT")
                     .requestMatchers(HttpMethod.PATCH, "/tickets/*/claim")
                     .hasRole("AGENT")
+                    .requestMatchers(HttpMethod.POST, "/sla-policies")
+                    .hasRole("ORGANIZATION_ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/sla-policies")
+                    .hasRole("ORGANIZATION_ADMIN")
                     .anyRequest()
                     .authenticated())
         .exceptionHandling(
