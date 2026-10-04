@@ -3,6 +3,8 @@ package com.harbor.server.integration.auth;
 import com.harbor.server.features.auth.dto.request.RegisterRequest;
 import com.harbor.server.features.auth.service.RegisterService;
 import com.harbor.server.features.organization.repository.OrganizationRepository;
+import com.harbor.server.features.tickets.sla.model.SlaPolicy;
+import com.harbor.server.features.tickets.sla.repository.SlaPolicyRepository;
 import com.harbor.server.features.user.model.User;
 import com.harbor.server.features.user.repository.UserRepository;
 import com.harbor.server.integration.AbstractIntegrationTest;
@@ -18,6 +20,7 @@ import static org.mockito.Mockito.doThrow;
 public class RegisterServiceTransactionTest extends AbstractIntegrationTest {
 
   @MockitoSpyBean private UserRepository userRepository;
+  @MockitoSpyBean private SlaPolicyRepository slaPolicyRepository;
   @Autowired private OrganizationRepository organizationRepository;
   @Autowired private RegisterService registerService;
 
@@ -34,5 +37,22 @@ public class RegisterServiceTransactionTest extends AbstractIntegrationTest {
     assertThrows(IllegalStateException.class, () -> registerService.register(request));
 
     assertEquals(0, organizationRepository.count());
+  }
+
+  @Test
+  void shouldRollbackRegistrationWhenDefaultSlaPolicyCreationFails() {
+    RegisterRequest request =
+        new RegisterRequest(
+            "max.mustermann@example.com", "Max", "Mustermann", "Harbor Test GmbH", "Password123!");
+
+    doThrow(new IllegalStateException("SLA policy creation failed"))
+        .when(slaPolicyRepository)
+        .save(any(SlaPolicy.class));
+
+    assertThrows(IllegalStateException.class, () -> registerService.register(request));
+
+    assertEquals(0, organizationRepository.count());
+    assertEquals(0, userRepository.count());
+    assertEquals(0, slaPolicyRepository.count());
   }
 }

@@ -1,25 +1,30 @@
 import { useState } from "react";
-import { CreateSlaPolicyDialog } from "@/features/settings/sla/components/CreateSlaPolicyDialog.tsx";
+import type { SlaPolicyResponse } from "@/api/generated/models/sla-policy-response.ts";
 import { SlaPolicyOverview } from "@/features/settings/sla/components/SlaPolicyOverview.tsx";
 import { SlaPolicySettingsHeader } from "@/features/settings/sla/components/SlaPolicySettingsHeader.tsx";
+import { UpdateSlaPolicyDialog } from "@/features/settings/sla/components/UpdateSlaPolicyDialog.tsx";
 
 export const SlaPolicySettingsPage = () => {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [selectedPolicy, setSelectedPolicy] =
+    useState<SlaPolicyResponse | null>(null);
 
   return (
     <div className="space-y-6">
-      <SlaPolicySettingsHeader
-        onCreatePolicy={() => setIsCreateDialogOpen(true)}
-      />
+      <SlaPolicySettingsHeader />
 
-      <SlaPolicyOverview
-        onCreatePolicy={() => setIsCreateDialogOpen(true)}
-      />
+      <SlaPolicyOverview onEditPolicy={setSelectedPolicy} />
 
-      <CreateSlaPolicyDialog
-        open={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
-      />
+      {selectedPolicy && (
+        <UpdateSlaPolicyDialog
+          policy={selectedPolicy}
+          open
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedPolicy(null);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

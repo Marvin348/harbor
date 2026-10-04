@@ -1,13 +1,6 @@
-import { Clock3, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
+import { Clock3 } from "lucide-react";
 
-type SlaPolicyListEmptyStateProps = {
-  onCreatePolicy: () => void;
-};
-
-export const SlaPolicyListEmptyState = ({
-  onCreatePolicy,
-}: SlaPolicyListEmptyStateProps) => {
+export const SlaPolicyListEmptyState = () => {
   return (
     <div className="flex min-h-72 items-center justify-center px-4 py-10">
       <div className="flex max-w-md flex-col items-center text-center">
@@ -15,16 +8,11 @@ export const SlaPolicyListEmptyState = ({
           <Clock3 className="size-5 text-muted-foreground" />
         </div>
         <h3 className="mt-5 text-base font-semibold">
-          Noch keine SLA-Richtlinien
+          Keine Richtlinien gefunden
         </h3>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Erstelle die erste Richtlinie, um Reaktions- und Lösungszeiten für
-          eine Ticket-Priorität festzulegen.
+          Für deine Organisation sind derzeit keine SLA-Richtlinien verfügbar.
         </p>
-        <Button className="mt-5" onClick={onCreatePolicy}>
-          <Plus />
-          Erste Richtlinie erstellen
-        </Button>
       </div>
     </div>
   );

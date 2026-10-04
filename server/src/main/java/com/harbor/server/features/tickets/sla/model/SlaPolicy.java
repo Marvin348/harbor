@@ -49,4 +49,11 @@ public class SlaPolicy {
     this.resolutionTimeMinutes = resolutionTimeMinutes;
     enabled = true;
   }
+
+  public void updateConfiguration(
+      String name, int responseTimeMinutes, int resolutionTimeMinutes) {
+    this.name = name;
+    this.responseTimeMinutes = responseTimeMinutes;
+    this.resolutionTimeMinutes = resolutionTimeMinutes;
+  }
 }

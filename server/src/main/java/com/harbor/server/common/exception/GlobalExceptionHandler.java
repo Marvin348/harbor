@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -76,6 +77,25 @@ public class GlobalExceptionHandler {
             .orElse("Validation failed");
 
     ErrorResponse response = new ErrorResponse(400, "Bad Request", message);
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(HandlerMethodValidationException.class)
+  public ResponseEntity<ErrorResponse> handleMethodValidation(
+      HandlerMethodValidationException exception) {
+    String message =
+        exception.getParameterValidationResults().stream()
+            .flatMap(result -> result.getResolvableErrors().stream())
+            .findFirst()
+            .map(error -> error.getDefaultMessage())
+            .orElse("Validation failed");
+
+    ErrorResponse response =
+        new ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+            message);
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }

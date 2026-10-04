@@ -1,3 +1,4 @@
+import type { SlaPolicyResponse } from "@/api/generated/models/sla-policy-response.ts";
 import { SlaPolicyList } from "@/features/settings/sla/components/SlaPolicyList.tsx";
 import { SlaPolicyListEmptyState } from "@/features/settings/sla/components/state/SlaPolicyListEmptyState.tsx";
 import { SlaPolicyListErrorState } from "@/features/settings/sla/components/state/SlaPolicyListErrorState.tsx";
@@ -6,12 +7,10 @@ import { useGetSlaPolicies } from "@/features/settings/sla/hooks/useGetSlaPolici
 import { TICKET_PRIORITY_OPTIONS } from "@/features/tickets/constants/ticketPriorityLabels.ts";
 
 type SlaPolicyOverviewProps = {
-  onCreatePolicy: () => void;
+  onEditPolicy: (policy: SlaPolicyResponse) => void;
 };
 
-export const SlaPolicyOverview = ({
-  onCreatePolicy,
-}: SlaPolicyOverviewProps) => {
+export const SlaPolicyOverview = ({ onEditPolicy }: SlaPolicyOverviewProps) => {
   const { slaPolicies = [], isLoading, isError, refetch } = useGetSlaPolicies();
 
   const summary = isLoading
@@ -32,9 +31,9 @@ export const SlaPolicyOverview = ({
       ) : isError ? (
         <SlaPolicyListErrorState onRetry={() => void refetch()} />
       ) : slaPolicies.length === 0 ? (
-        <SlaPolicyListEmptyState onCreatePolicy={onCreatePolicy} />
+        <SlaPolicyListEmptyState />
       ) : (
-        <SlaPolicyList policies={slaPolicies} />
+        <SlaPolicyList policies={slaPolicies} onEditPolicy={onEditPolicy} />
       )}
     </section>
   );

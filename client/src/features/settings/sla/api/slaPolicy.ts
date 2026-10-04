@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/apiClient.ts";
-import type { CreateSlaPolicyFields } from "@/features/settings/sla/schema/createSlaPolicySchema.ts";
+import type { UpdateSlaPolicyFields } from "@/features/settings/sla/schema/updateSlaPolicySchema.ts";
 import type { SlaPolicyResponse } from "@/api/generated/models/sla-policy-response.ts";
 
 export const getSlaPolicies = async (): Promise<SlaPolicyResponse[]> => {
@@ -7,8 +7,9 @@ export const getSlaPolicies = async (): Promise<SlaPolicyResponse[]> => {
   return res.data;
 };
 
-export const createSlaPolicy = async (
-  data: CreateSlaPolicyFields,
+export const updateSlaPolicy = async (
+  id: number,
+  data: UpdateSlaPolicyFields,
 ): Promise<void> => {
-  await apiClient.post("/sla-policies", data);
+  await apiClient.patch(`/sla-policies/${id}`, data);
 };

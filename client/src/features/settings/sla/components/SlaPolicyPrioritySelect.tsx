@@ -1,4 +1,4 @@
-import type { TicketResponsePriorityEnum } from "@/api/generated/models/ticket-response.ts";
+import type { SlaPolicyResponseTicketPriorityEnum } from "@/api/generated/models/sla-policy-response.ts";
 import {
   Select,
   SelectContent,
@@ -9,8 +9,9 @@ import {
 import { TICKET_PRIORITY_OPTIONS } from "@/features/tickets/constants/ticketPriorityLabels.ts";
 
 type SlaPolicyPrioritySelectProps = {
-  value?: TicketResponsePriorityEnum;
-  onValueChange: (value: TicketResponsePriorityEnum) => void;
+  value?: SlaPolicyResponseTicketPriorityEnum;
+  onValueChange?: (value: SlaPolicyResponseTicketPriorityEnum) => void;
+  disabled?: boolean;
   ariaInvalid?: boolean;
   ariaDescribedBy?: string;
 };
@@ -18,15 +19,17 @@ type SlaPolicyPrioritySelectProps = {
 export const SlaPolicyPrioritySelect = ({
   value,
   onValueChange,
+  disabled,
   ariaInvalid,
   ariaDescribedBy,
 }: SlaPolicyPrioritySelectProps) => {
   return (
     <Select
       value={value ?? null}
+      disabled={disabled}
       onValueChange={(selectedValue) => {
-        if (selectedValue !== null) {
-          onValueChange(selectedValue as TicketResponsePriorityEnum);
+        if (selectedValue !== null && onValueChange) {
+          onValueChange(selectedValue as SlaPolicyResponseTicketPriorityEnum);
         }
       }}
       items={TICKET_PRIORITY_OPTIONS}
