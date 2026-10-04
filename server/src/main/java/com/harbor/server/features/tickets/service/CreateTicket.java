@@ -12,11 +12,14 @@ import com.harbor.server.features.tickets.dto.response.TicketResponse;
 import com.harbor.server.features.tickets.model.Ticket;
 import com.harbor.server.features.tickets.model.TicketPriority;
 import com.harbor.server.features.tickets.repository.TicketRepository;
+import com.harbor.server.features.tickets.sla.service.CreateTicketSla;
 import com.harbor.server.features.user.model.User;
 import com.harbor.server.features.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class CreateTicket {
@@ -26,6 +29,7 @@ public class CreateTicket {
   private final ServiceRepository serviceRepository;
   private final TicketRepository ticketRepository;
   private final TicketPriorityCalculator ticketPriorityCalculator;
+  private final CreateTicketSla createTicketSla;
 
   public TicketResponse execute(CreateTicketRequest request) {
     CustomUserDetails userDetails = currentUserProvider.getCurrentUser();
@@ -68,6 +72,8 @@ public class CreateTicket {
             request.assessment().businessCriticality());
 
     ticketRepository.save(ticket);
+
+    createTicketSla.execute(organization, ticket);
 
     return new TicketResponse(
         ticket.getId(),

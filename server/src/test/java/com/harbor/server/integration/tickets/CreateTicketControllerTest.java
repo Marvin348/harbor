@@ -1,8 +1,10 @@
 package com.harbor.server.integration.tickets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,8 +19,12 @@ import com.harbor.server.features.tickets.model.TicketPriority;
 import com.harbor.server.features.tickets.model.TicketStatus;
 import com.harbor.server.features.tickets.model.TicketUrgency;
 import com.harbor.server.features.tickets.repository.TicketRepository;
+import com.harbor.server.features.tickets.sla.model.SlaPolicy;
+import com.harbor.server.features.tickets.sla.model.TicketSla;
+import com.harbor.server.features.tickets.sla.repository.TicketSlaRepository;
 import com.harbor.server.integration.AbstractControllerIntegrationTest;
 import com.harbor.server.integration.helper.AuthenticatedTestUser;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +33,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 public class CreateTicketControllerTest extends AbstractControllerIntegrationTest {
   @Autowired private TicketRepository ticketRepository;
+  @Autowired private TicketSlaRepository ticketSlaRepository;
 
   private ResultActions performCreateTicket(Cookie sessionCookie, String requestBody)
       throws Exception {
@@ -60,6 +67,9 @@ public class CreateTicketControllerTest extends AbstractControllerIntegrationTes
     ServiceTeam serviceTeam = testDataFactory.createServiceTeam(organization, "IT Support");
     Service service =
         testDataFactory.createService(organization, serviceTeam, "Identity Management");
+    SlaPolicy slaPolicy =
+        testDataFactory.createSlaPolicy(
+            organization, "Critical SLA", TicketPriority.CRITICAL, 15, 120);
 
     String requestBody = validRequestBody(service.getId());
 
@@ -89,6 +99,45 @@ public class CreateTicketControllerTest extends AbstractControllerIntegrationTes
     assertNull(ticket.getAssignedAgent());
     assertNotNull(ticket.getCreatedAt());
     assertNotNull(ticket.getUpdatedAt());
+
+    assertEquals(1, ticketSlaRepository.count());
+
+    TicketSla ticketSla = ticketSlaRepository.findAll().getFirst();
+
+    assertNotNull(ticketSla.getId());
+    assertEquals(organization.getId(), ticketSla.getOrganization().getId());
+    assertEquals(ticket.getId(), ticketSla.getTicket().getId());
+    assertEquals(slaPolicy.getId(), ticketSla.getSlaPolicy().getId());
+    assertEquals(ticket.getCreatedAt().plusMinutes(15), ticketSla.getResponseDueAt());
+    assertEquals(ticket.getCreatedAt().plusMinutes(120), ticketSla.getResolutionDueAt());
+    assertNull(ticketSla.getFirstRespondedAt());
+    assertNull(ticketSla.getResolvedAt());
+    assertNull(ticketSla.getResponseBreachedAt());
+    assertNull(ticketSla.getResolutionBreachedAt());
+    assertNotNull(ticketSla.getCreatedAt());
+  }
+
+  @Test
+  void shouldRollbackTicketWhenSlaCreationFails() throws Exception {
+    AuthenticatedTestUser auth = testAuthHelper.loginRequester();
+    Organization organization = auth.user().getOrganization();
+    ServiceTeam serviceTeam = testDataFactory.createServiceTeam(organization, "IT Support");
+    Service service =
+        testDataFactory.createService(organization, serviceTeam, "Identity Management");
+
+    ServletException exception =
+        assertThrows(
+            ServletException.class,
+            () ->
+                performCreateTicket(auth.sessionCookie(), validRequestBody(service.getId()))
+                    .andReturn());
+
+    IllegalStateException cause =
+        assertInstanceOf(IllegalStateException.class, exception.getCause());
+    assertEquals(
+        "SLA-Policy for this organization and priority not found.", cause.getMessage());
+    assertEquals(0, ticketRepository.count());
+    assertEquals(0, ticketSlaRepository.count());
   }
 
   @Test

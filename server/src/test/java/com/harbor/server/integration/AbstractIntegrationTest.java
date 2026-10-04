@@ -7,6 +7,7 @@ import com.harbor.server.features.services.repository.ServiceRepository;
 import com.harbor.server.features.tickets.communication.message.repository.TicketMessageRepository;
 import com.harbor.server.features.tickets.repository.TicketRepository;
 import com.harbor.server.features.tickets.sla.repository.SlaPolicyRepository;
+import com.harbor.server.features.tickets.sla.repository.TicketSlaRepository;
 import com.harbor.server.features.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public abstract class AbstractIntegrationTest {
 
   @Autowired private TicketRepository ticketRepository;
   @Autowired private TicketMessageRepository ticketMessageRepository;
+  @Autowired private TicketSlaRepository ticketSlaRepository;
   @Autowired private SlaPolicyRepository slaPolicyRepository;
   @Autowired private ServiceTeamRepository serviceTeamRepository;
   @Autowired private ServiceRepository serviceRepository;
@@ -51,6 +53,7 @@ public abstract class AbstractIntegrationTest {
   @BeforeEach
   protected void cleanDatabase() {
     ticketMessageRepository.deleteAllInBatch();
+    ticketSlaRepository.deleteAllInBatch();
     slaPolicyRepository.deleteAllInBatch();
     ticketRepository.deleteAllInBatch();
     serviceRepository.deleteAllInBatch();
