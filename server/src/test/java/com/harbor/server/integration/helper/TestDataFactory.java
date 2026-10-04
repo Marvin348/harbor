@@ -15,6 +15,8 @@ import com.harbor.server.features.tickets.model.TicketPriority;
 import com.harbor.server.features.tickets.model.TicketStatus;
 import com.harbor.server.features.tickets.model.TicketUrgency;
 import com.harbor.server.features.tickets.repository.TicketRepository;
+import com.harbor.server.features.tickets.sla.model.SlaPolicy;
+import com.harbor.server.features.tickets.sla.repository.SlaPolicyRepository;
 import com.harbor.server.features.user.model.OrganizationRole;
 import com.harbor.server.features.user.model.User;
 import com.harbor.server.features.user.repository.UserRepository;
@@ -30,6 +32,7 @@ public class TestDataFactory {
   private final ServiceRepository serviceRepository;
   private final TicketRepository ticketRepository;
   private final PasswordEncoder passwordEncoder;
+  private final SlaPolicyRepository slaPolicyRepository;
 
   public Organization createOrganization() {
     return organizationRepository.save(new Organization("Harbor Test GmbH"));
@@ -120,5 +123,16 @@ public class TestDataFactory {
             passwordEncoder.encode("Password123!"),
             role,
             organization));
+  }
+
+  public SlaPolicy createSlaPolicy(
+      Organization organization,
+      String name,
+      TicketPriority ticketPriority,
+      int responseTimeMinutes,
+      int resolutionTimeMinutes) {
+    return slaPolicyRepository.save(
+        new SlaPolicy(
+            organization, name, ticketPriority, responseTimeMinutes, resolutionTimeMinutes));
   }
 }
