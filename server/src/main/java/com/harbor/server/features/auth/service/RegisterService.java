@@ -5,6 +5,7 @@ import com.harbor.server.features.auth.dto.request.RegisterRequest;
 import com.harbor.server.features.auth.dto.response.RegisterResponse;
 import com.harbor.server.features.organization.model.Organization;
 import com.harbor.server.features.organization.repository.OrganizationRepository;
+import com.harbor.server.features.tickets.sla.service.CreateDefaultSlaPolicies;
 import com.harbor.server.features.user.model.OrganizationRole;
 import com.harbor.server.features.user.model.User;
 import com.harbor.server.features.user.repository.UserRepository;
@@ -19,6 +20,7 @@ public class RegisterService {
   private final OrganizationRepository organizationRepository;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final CreateDefaultSlaPolicies createDefaultSlaPolicies;
 
   @Transactional
   public RegisterResponse register(RegisterRequest request) {
@@ -44,6 +46,8 @@ public class RegisterService {
             organization);
 
     userRepository.save(user);
+
+    createDefaultSlaPolicies.execute(organization);
 
     return new RegisterResponse(
         user.getId(),

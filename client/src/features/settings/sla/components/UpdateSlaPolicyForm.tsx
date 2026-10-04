@@ -1,53 +1,69 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import type { SlaPolicyResponse } from "@/api/generated/models/sla-policy-response.ts";
+import { showErrorToast } from "@/common/showErrorToast.ts";
+import { showSuccessToast } from "@/common/showSuccessToast.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
-import { showErrorToast } from "@/common/showErrorToast.ts";
-import { showSuccessToast } from "@/common/showSuccessToast.ts";
 import { SlaPolicyPrioritySelect } from "@/features/settings/sla/components/SlaPolicyPrioritySelect.tsx";
-import { getCreateSlaPolicyErrorMessage } from "@/features/settings/sla/errors/getCreateSlaPolicyErrorMessage.ts";
-import { useCreateSlaPolicy } from "@/features/settings/sla/hooks/useCreateSlaPolicy.ts";
+import { getUpdateSlaPolicyErrorMessage } from "@/features/settings/sla/errors/getUpdateSlaPolicyErrorMessage.ts";
+import { useUpdateSlaPolicy } from "@/features/settings/sla/hooks/useUpdateSlaPolicy.ts";
 import {
-  createSlaPolicySchema,
-  type CreateSlaPolicyFields,
-} from "@/features/settings/sla/schema/createSlaPolicySchema.ts";
+  updateSlaPolicySchema,
+  type UpdateSlaPolicyFields,
+} from "@/features/settings/sla/schema/updateSlaPolicySchema.ts";
 
-type CreateSlaPolicyFormProps = {
-  onCreated: () => void;
+type UpdateSlaPolicyFormProps = {
+  policy: SlaPolicyResponse;
+  onUpdated: () => void;
 };
 
-export const CreateSlaPolicyForm = ({
-  onCreated,
-}: CreateSlaPolicyFormProps) => {
-  const { mutate, isPending } = useCreateSlaPolicy();
+export const UpdateSlaPolicyForm = ({
+  policy,
+  onUpdated,
+}: UpdateSlaPolicyFormProps) => {
+  const { mutate, isPending } = useUpdateSlaPolicy();
 
   const {
-    control,
     register,
     handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<CreateSlaPolicyFields>({
-    resolver: zodResolver(createSlaPolicySchema),
+    formState: { dirtyFields, errors, isDirty, isSubmitting },
+  } = useForm<UpdateSlaPolicyFields>({
+    resolver: zodResolver(updateSlaPolicySchema),
     defaultValues: {
-      name: "",
+      name: policy.name,
+      responseTimeMinutes: policy.responseTimeMinutes,
+      resolutionTimeMinutes: policy.resolutionTimeMinutes,
     },
   });
 
-  const onSubmit = (data: CreateSlaPolicyFields) => {
-    mutate(data, {
-      onSuccess: () => {
-        reset();
-        showSuccessToast("SLA-Richtlinie wurde erstellt.");
-        onCreated();
+  const onSubmit = (data: UpdateSlaPolicyFields) => {
+    const changes: UpdateSlaPolicyFields = {};
+
+    if (dirtyFields.name) {
+      changes.name = data.name;
+    }
+    if (dirtyFields.responseTimeMinutes) {
+      changes.responseTimeMinutes = data.responseTimeMinutes;
+    }
+    if (dirtyFields.resolutionTimeMinutes) {
+      changes.resolutionTimeMinutes = data.resolutionTimeMinutes;
+    }
+
+    mutate(
+      { id: policy.id, data: changes },
+      {
+        onSuccess: () => {
+          showSuccessToast("SLA-Richtlinie wurde aktualisiert.");
+          onUpdated();
+        },
+        onError: (error) => {
+          showErrorToast(getUpdateSlaPolicyErrorMessage(error));
+        },
       },
-      onError: (error) => {
-        showErrorToast(getCreateSlaPolicyErrorMessage(error));
-      },
-    });
+    );
   };
 
   return (
@@ -71,28 +87,10 @@ export const CreateSlaPolicyForm = ({
 
       <label className="grid gap-2">
         <span className="text-sm font-medium">Ticket-Priorität</span>
-        <Controller
-          control={control}
-          name="ticketPriority"
-          render={({ field }) => (
-            <SlaPolicyPrioritySelect
-              value={field.value}
-              onValueChange={field.onChange}
-              ariaInvalid={Boolean(errors.ticketPriority)}
-              ariaDescribedBy={
-                errors.ticketPriority ? "sla-policy-priority-error" : undefined
-              }
-            />
-          )}
-        />
-        {errors.ticketPriority && (
-          <p
-            id="sla-policy-priority-error"
-            className="text-xs text-destructive"
-          >
-            {errors.ticketPriority.message}
-          </p>
-        )}
+        <SlaPolicyPrioritySelect value={policy.ticketPriority} disabled />
+        <p className="text-xs text-muted-foreground">
+          Die Priorität einer bestehenden Richtlinie kann nicht geändert werden.
+        </p>
       </label>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -180,11 +178,11 @@ export const CreateSlaPolicyForm = ({
         </DialogClose>
         <Button
           type="submit"
-          disabled={isPending || isSubmitting}
+          disabled={!isDirty || isPending || isSubmitting}
           className="sm:min-w-32"
         >
-          {isPending ? <Spinner /> : <Plus />}
-          Erstellen
+          {isPending && <Spinner />}
+          Speichern
         </Button>
       </DialogFooter>
     </form>

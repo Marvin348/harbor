@@ -7,10 +7,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.harbor.server.features.organization.model.Organization;
 import com.harbor.server.features.organization.repository.OrganizationRepository;
+import com.harbor.server.features.tickets.model.TicketPriority;
+import com.harbor.server.features.tickets.sla.model.SlaPolicy;
+import com.harbor.server.features.tickets.sla.repository.SlaPolicyRepository;
 import com.harbor.server.features.user.model.OrganizationRole;
 import com.harbor.server.features.user.model.User;
 import com.harbor.server.features.user.repository.UserRepository;
 import com.harbor.server.integration.AbstractControllerIntegrationTest;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,7 +24,28 @@ public class RegisterControllerTest extends AbstractControllerIntegrationTest {
 
   @Autowired private OrganizationRepository organizationRepository;
   @Autowired private UserRepository userRepository;
+  @Autowired private SlaPolicyRepository slaPolicyRepository;
   @Autowired private PasswordEncoder passwordEncoder;
+
+  private void assertDefaultSlaPolicy(
+      List<SlaPolicy> policies,
+      Organization organization,
+      TicketPriority priority,
+      String name,
+      int responseTimeMinutes,
+      int resolutionTimeMinutes) {
+    SlaPolicy policy =
+        policies.stream()
+            .filter(candidate -> candidate.getTicketPriority() == priority)
+            .findFirst()
+            .orElseThrow();
+
+    assertEquals(organization.getId(), policy.getOrganization().getId());
+    assertEquals(name, policy.getName());
+    assertEquals(responseTimeMinutes, policy.getResponseTimeMinutes());
+    assertEquals(resolutionTimeMinutes, policy.getResolutionTimeMinutes());
+    assertTrue(policy.isEnabled());
+  }
 
   private String registrationRequest(
       String email, String firstName, String lastName, String companyName, String password) {
@@ -85,6 +110,19 @@ public class RegisterControllerTest extends AbstractControllerIntegrationTest {
 
     assertNotNull(user.getOrganization());
     assertEquals("Harbor Test GmbH", user.getOrganization().getName());
+
+    List<SlaPolicy> policies =
+        slaPolicyRepository.findAllByOrganizationIdOrderByIdAsc(user.getOrganization().getId());
+
+    assertEquals(4, policies.size());
+    assertDefaultSlaPolicy(
+        policies, user.getOrganization(), TicketPriority.LOW, "Low SLA", 240, 2880);
+    assertDefaultSlaPolicy(
+        policies, user.getOrganization(), TicketPriority.MEDIUM, "Medium SLA", 120, 1440);
+    assertDefaultSlaPolicy(
+        policies, user.getOrganization(), TicketPriority.HIGH, "High SLA", 60, 480);
+    assertDefaultSlaPolicy(
+        policies, user.getOrganization(), TicketPriority.CRITICAL, "Critical SLA", 30, 240);
   }
 
   @Test

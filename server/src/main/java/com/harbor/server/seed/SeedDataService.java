@@ -1,5 +1,8 @@
 package com.harbor.server.seed;
 
+import static com.harbor.server.features.tickets.sla.service.CreateDefaultSlaPolicies.SLA_DEFAULTS;
+import static com.harbor.server.features.tickets.sla.service.CreateDefaultSlaPolicies.policyNameFor;
+
 import com.harbor.server.features.organization.model.Organization;
 import com.harbor.server.features.organization.repository.OrganizationRepository;
 import com.harbor.server.features.serviceTeam.model.ServiceTeam;
@@ -11,6 +14,9 @@ import com.harbor.server.features.tickets.communication.message.model.TicketMess
 import com.harbor.server.features.tickets.communication.message.repository.TicketMessageRepository;
 import com.harbor.server.features.tickets.model.Ticket;
 import com.harbor.server.features.tickets.repository.TicketRepository;
+import com.harbor.server.features.tickets.sla.model.SlaPolicy;
+import com.harbor.server.features.tickets.sla.repository.SlaPolicyRepository;
+import com.harbor.server.features.tickets.sla.repository.TicketSlaRepository;
 import com.harbor.server.features.user.model.User;
 import com.harbor.server.features.user.repository.UserRepository;
 import com.harbor.server.seed.data.*;
@@ -37,6 +43,8 @@ public class SeedDataService {
   private final ServiceRepository serviceRepository;
   private final TicketRepository ticketRepository;
   private final TicketMessageRepository ticketMessageRepository;
+  private final TicketSlaRepository ticketSlaRepository;
+  private final SlaPolicyRepository slaPolicyRepository;
   private final PasswordEncoder passwordEncoder;
 
   @Value("${app.seed.enabled}")
@@ -51,6 +59,7 @@ public class SeedDataService {
     clearDatabase();
 
     Organization organization = seedOrganizations();
+    seedSlaPolicies(organization);
 
     List<User> users = seedUsers(organization);
     Map<String, User> usersByEmail =
@@ -82,7 +91,9 @@ public class SeedDataService {
 
   private void clearDatabase() {
     ticketMessageRepository.deleteAllInBatch();
+    ticketSlaRepository.deleteAllInBatch();
     ticketRepository.deleteAllInBatch();
+    slaPolicyRepository.deleteAllInBatch();
     serviceRepository.deleteAllInBatch();
     serviceTeamMemberRepository.deleteAllInBatch();
     serviceTeamRepository.deleteAllInBatch();
@@ -93,6 +104,20 @@ public class SeedDataService {
   private Organization seedOrganizations() {
     Organization organization = new Organization(OrganizationSeedData.NAME);
     return organizationRepository.save(organization);
+  }
+
+  private void seedSlaPolicies(Organization organization) {
+    for (var entry : SLA_DEFAULTS.entrySet()) {
+      var defaults = entry.getValue();
+
+      slaPolicyRepository.save(
+          new SlaPolicy(
+              organization,
+              policyNameFor(entry.getKey()),
+              entry.getKey(),
+              defaults.responseTimeMinutes(),
+              defaults.resolutionTimeMinutes()));
+    }
   }
 
   private List<User> seedUsers(Organization organization) {
