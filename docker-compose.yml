@@ -2,15 +2,12 @@ services:
   postgres:
     image: postgres:17
     container_name: harbor-postgres-container
-
     ports:
       - "${POSTGRES_PORT}:5432"
-
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -21,5 +18,18 @@ services:
     ports:
       - "${REDIS_PORT}:6379"
 
+  rabbitmq:
+    image: rabbitmq:4.3.6-management
+    container_name: harbor-rabbitmq
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   postgres_data:
+  rabbitmq_data:
