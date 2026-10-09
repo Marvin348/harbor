@@ -6,6 +6,7 @@ import com.harbor.server.features.serviceTeam.repository.ServiceTeamRepository;
 import com.harbor.server.features.services.repository.ServiceRepository;
 import com.harbor.server.features.tickets.communication.message.repository.TicketMessageRepository;
 import com.harbor.server.features.tickets.repository.TicketRepository;
+import com.harbor.server.features.tickets.sla.repository.SlaBreachProcessingRepository;
 import com.harbor.server.features.tickets.sla.repository.SlaPolicyRepository;
 import com.harbor.server.features.tickets.sla.repository.TicketSlaRepository;
 import com.harbor.server.features.user.repository.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.rabbitmq.RabbitMQContainer;
 
 @SpringBootTest
 public abstract class AbstractIntegrationTest {
@@ -25,9 +27,13 @@ public abstract class AbstractIntegrationTest {
   static final GenericContainer<?> redis =
       new GenericContainer<>("redis:7.4-alpine").withExposedPorts(6379);
 
+  static final RabbitMQContainer rabbitMQ =
+      new RabbitMQContainer("rabbitmq:4.3.6-management");
+
   static {
     postgres.start();
     redis.start();
+    rabbitMQ.start();
   }
 
   @DynamicPropertySource
@@ -38,10 +44,16 @@ public abstract class AbstractIntegrationTest {
 
     registry.add("spring.data.redis.host", redis::getHost);
     registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
+
+    registry.add("spring.rabbitmq.host", rabbitMQ::getHost);
+    registry.add("spring.rabbitmq.port", rabbitMQ::getAmqpPort);
+    registry.add("spring.rabbitmq.username", rabbitMQ::getAdminUsername);
+    registry.add("spring.rabbitmq.password", rabbitMQ::getAdminPassword);
   }
 
   @Autowired private TicketRepository ticketRepository;
   @Autowired private TicketMessageRepository ticketMessageRepository;
+  @Autowired private SlaBreachProcessingRepository slaBreachProcessingRepository;
   @Autowired private TicketSlaRepository ticketSlaRepository;
   @Autowired private SlaPolicyRepository slaPolicyRepository;
   @Autowired private ServiceTeamRepository serviceTeamRepository;
@@ -53,6 +65,7 @@ public abstract class AbstractIntegrationTest {
   @BeforeEach
   protected void cleanDatabase() {
     ticketMessageRepository.deleteAllInBatch();
+    slaBreachProcessingRepository.deleteAllInBatch();
     ticketSlaRepository.deleteAllInBatch();
     slaPolicyRepository.deleteAllInBatch();
     ticketRepository.deleteAllInBatch();

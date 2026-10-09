@@ -1,6 +1,7 @@
 package com.harbor.server.features.tickets.sla.repository;
 
 import com.harbor.server.features.tickets.sla.model.TicketSla;
+import com.harbor.server.features.tickets.sla.projection.SlaBreachCandidate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,23 +15,27 @@ public interface TicketSlaRepository extends JpaRepository<TicketSla, Long> {
 
   @Query(
       """
-          SELECT ts.id
+          SELECT new com.harbor.server.features.tickets.sla.projection.SlaBreachCandidate(
+              ts.id,
+              ts.organization.id)
           FROM TicketSla ts
           WHERE ts.responseDueAt < :now
           AND (ts.firstRespondedAt IS NULL OR ts.firstRespondedAt > ts.responseDueAt)
           AND ts.responseBreachedAt IS NULL
           """)
-  List<Long> findResponseBreachCandidateIds(@Param("now") LocalDateTime now);
+  List<SlaBreachCandidate> findResponseBreachCandidateIds(@Param("now") LocalDateTime now);
 
   @Query(
       """
-          SELECT ts.id
+          SELECT new com.harbor.server.features.tickets.sla.projection.SlaBreachCandidate(
+              ts.id,
+              ts.organization.id)
           FROM TicketSla ts
           WHERE ts.resolutionDueAt < :now
           AND (ts.resolvedAt IS NULL OR ts.resolvedAt > ts.resolutionDueAt)
           AND ts.resolutionBreachedAt IS NULL
           """)
-  List<Long> findResolutionBreachCandidateIds(@Param("now") LocalDateTime now);
+  List<SlaBreachCandidate> findResolutionBreachCandidateIds(@Param("now") LocalDateTime now);
 
   @Modifying
   @Query(

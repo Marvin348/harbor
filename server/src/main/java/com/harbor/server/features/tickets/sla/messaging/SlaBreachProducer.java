@@ -10,7 +10,6 @@ public class SlaBreachProducer {
 
   private final RabbitTemplate rabbitTemplate;
 
-//  queue.add("send-email", payload);
   public void send(SlaBreachJob job) {
     rabbitTemplate.convertAndSend(
         SlaMessagingConfig.SLA_EXCHANGE, SlaMessagingConfig.SLA_BREACH_ROUTING_KEY, job);
