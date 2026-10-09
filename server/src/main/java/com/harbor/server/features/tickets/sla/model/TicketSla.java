@@ -53,7 +53,9 @@ public class TicketSla {
 
   @PrePersist
   protected void onCreate() {
-    this.createdAt = LocalDateTime.now();
+    if (createdAt == null) {
+      createdAt = LocalDateTime.now();
+    }
   }
 
   public TicketSla(
@@ -67,5 +69,6 @@ public class TicketSla {
     this.slaPolicy = slaPolicy;
     this.responseDueAt = responseDueAt;
     this.resolutionDueAt = resolutionDueAt;
+    this.createdAt = ticket.getCreatedAt();
   }
 }

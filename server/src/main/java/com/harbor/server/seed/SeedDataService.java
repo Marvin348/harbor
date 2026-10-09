@@ -13,8 +13,10 @@ import com.harbor.server.features.services.repository.ServiceRepository;
 import com.harbor.server.features.tickets.communication.message.model.TicketMessage;
 import com.harbor.server.features.tickets.communication.message.repository.TicketMessageRepository;
 import com.harbor.server.features.tickets.model.Ticket;
+import com.harbor.server.features.tickets.model.TicketPriority;
 import com.harbor.server.features.tickets.repository.TicketRepository;
 import com.harbor.server.features.tickets.sla.model.SlaPolicy;
+import com.harbor.server.features.tickets.sla.model.TicketSla;
 import com.harbor.server.features.tickets.sla.repository.SlaPolicyRepository;
 import com.harbor.server.features.tickets.sla.repository.TicketSlaRepository;
 import com.harbor.server.features.user.model.User;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +62,7 @@ public class SeedDataService {
     clearDatabase();
 
     Organization organization = seedOrganizations();
-    seedSlaPolicies(organization);
+    Map<TicketPriority, SlaPolicy> slaPoliciesByPriority = seedSlaPolicies(organization);
 
     List<User> users = seedUsers(organization);
     Map<String, User> usersByEmail =
@@ -84,6 +87,8 @@ public class SeedDataService {
 
     Map<String, Ticket> ticketsByKey =
         seedTickets(organization, usersByEmail, servicesByNameAndTeam, serviceTeamsByName);
+
+    seedTicketSlas(organization, ticketsByKey, slaPoliciesByPriority);
     seedTicketMessages(ticketsByKey, usersByEmail);
 
     System.out.println("Seed data service started...");
@@ -106,18 +111,25 @@ public class SeedDataService {
     return organizationRepository.save(organization);
   }
 
-  private void seedSlaPolicies(Organization organization) {
+  private Map<TicketPriority, SlaPolicy> seedSlaPolicies(Organization organization) {
+    Map<TicketPriority, SlaPolicy> slaPoliciesByPriority =
+        new EnumMap<>(TicketPriority.class);
+
     for (var entry : SLA_DEFAULTS.entrySet()) {
       var defaults = entry.getValue();
 
-      slaPolicyRepository.save(
+      SlaPolicy slaPolicy =
           new SlaPolicy(
               organization,
               policyNameFor(entry.getKey()),
               entry.getKey(),
               defaults.responseTimeMinutes(),
-              defaults.resolutionTimeMinutes()));
+              defaults.resolutionTimeMinutes());
+
+      slaPoliciesByPriority.put(entry.getKey(), slaPolicyRepository.save(slaPolicy));
     }
+
+    return slaPoliciesByPriority;
   }
 
   private List<User> seedUsers(Organization organization) {
@@ -223,6 +235,30 @@ public class SeedDataService {
     }
 
     return ticketsByKey;
+  }
+
+  private void seedTicketSlas(
+      Organization organization,
+      Map<String, Ticket> ticketsByKey,
+      Map<TicketPriority, SlaPolicy> slaPoliciesByPriority) {
+    for (Ticket ticket : ticketsByKey.values()) {
+      SlaPolicy slaPolicy = slaPoliciesByPriority.get(ticket.getPriority());
+
+      if (slaPolicy == null) {
+        throw new IllegalStateException(
+            "SLA policy for ticket priority " + ticket.getPriority() + " not found");
+      }
+
+      TicketSla ticketSla =
+          new TicketSla(
+              organization,
+              ticket,
+              slaPolicy,
+              ticket.getCreatedAt().plusMinutes(slaPolicy.getResponseTimeMinutes()),
+              ticket.getCreatedAt().plusMinutes(slaPolicy.getResolutionTimeMinutes()));
+
+      ticketSlaRepository.save(ticketSla);
+    }
   }
 
   private void seedTicketMessages(
