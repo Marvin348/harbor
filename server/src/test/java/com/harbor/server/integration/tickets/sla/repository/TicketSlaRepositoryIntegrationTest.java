@@ -40,7 +40,8 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       LocalDateTime now = LocalDateTime.of(2026, 10, 8, 12, 0);
       TicketSla ticketSla = createTicketSla(now.minusMinutes(1), now.plusHours(4));
 
-      List<SlaBreachCandidate> candidates = ticketSlaRepository.findResponseBreachCandidateIds(now);
+      List<SlaBreachCandidate> candidates =
+          ticketSlaRepository.findResponseBreachCandidateIds(now, 0L);
 
       assertAll(
           () -> assertEquals(1, candidates.size()),
@@ -57,7 +58,8 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       TicketSla ticketSla = createTicketSla(responseDueAt, now.plusHours(4));
       setFirstRespondedAt(ticketSla.getId(), responseDueAt.plusMinutes(1));
 
-      List<SlaBreachCandidate> candidates = ticketSlaRepository.findResponseBreachCandidateIds(now);
+      List<SlaBreachCandidate> candidates =
+          ticketSlaRepository.findResponseBreachCandidateIds(now, 0L);
 
       assertAll(
           () -> assertEquals(1, candidates.size()),
@@ -71,7 +73,8 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       TicketSla ticketSla = createTicketSla(responseDueAt, now.plusHours(4));
       setFirstRespondedAt(ticketSla.getId(), responseDueAt.minusSeconds(1));
 
-      List<SlaBreachCandidate> candidates = ticketSlaRepository.findResponseBreachCandidateIds(now);
+      List<SlaBreachCandidate> candidates =
+          ticketSlaRepository.findResponseBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -83,7 +86,8 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       TicketSla ticketSla = createTicketSla(responseDueAt, now.plusHours(4));
       setFirstRespondedAt(ticketSla.getId(), responseDueAt);
 
-      List<SlaBreachCandidate> candidates = ticketSlaRepository.findResponseBreachCandidateIds(now);
+      List<SlaBreachCandidate> candidates =
+          ticketSlaRepository.findResponseBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -93,7 +97,8 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       LocalDateTime now = LocalDateTime.of(2026, 10, 8, 12, 0);
       createTicketSla(now, now.plusHours(4));
 
-      List<SlaBreachCandidate> candidates = ticketSlaRepository.findResponseBreachCandidateIds(now);
+      List<SlaBreachCandidate> candidates =
+          ticketSlaRepository.findResponseBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -103,7 +108,8 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       LocalDateTime now = LocalDateTime.of(2026, 10, 8, 12, 0);
       createTicketSla(now.plusMinutes(1), now.plusHours(4));
 
-      List<SlaBreachCandidate> candidates = ticketSlaRepository.findResponseBreachCandidateIds(now);
+      List<SlaBreachCandidate> candidates =
+          ticketSlaRepository.findResponseBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -114,7 +120,8 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       TicketSla ticketSla = createTicketSla(now.plusHours(4), now.minusMinutes(1));
       setResponseBreachedAt(ticketSla.getId(), now.minusSeconds(30));
 
-      List<SlaBreachCandidate> candidates = ticketSlaRepository.findResponseBreachCandidateIds(now);
+      List<SlaBreachCandidate> candidates =
+          ticketSlaRepository.findResponseBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -129,7 +136,7 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       TicketSla ticketSla = createTicketSla(now.minusHours(4), now.minusMinutes(1));
 
       List<SlaBreachCandidate> candidates =
-          ticketSlaRepository.findResolutionBreachCandidateIds(now);
+          ticketSlaRepository.findResolutionBreachCandidateIds(now, 0L);
 
       assertAll(
           () -> assertEquals(1, candidates.size()),
@@ -147,7 +154,7 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       setResolvedAt(ticketSla.getId(), resolutionDueAt.plusMinutes(1));
 
       List<SlaBreachCandidate> candidates =
-          ticketSlaRepository.findResolutionBreachCandidateIds(now);
+          ticketSlaRepository.findResolutionBreachCandidateIds(now, 0L);
 
       assertAll(
           () -> assertEquals(1, candidates.size()),
@@ -162,7 +169,7 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       setResolvedAt(ticketSla.getId(), resolutionDueAt.minusSeconds(1));
 
       List<SlaBreachCandidate> candidates =
-          ticketSlaRepository.findResolutionBreachCandidateIds(now);
+          ticketSlaRepository.findResolutionBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -175,7 +182,7 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       setResolvedAt(ticketSla.getId(), resolutionDueAt);
 
       List<SlaBreachCandidate> candidates =
-          ticketSlaRepository.findResolutionBreachCandidateIds(now);
+          ticketSlaRepository.findResolutionBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -186,7 +193,7 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       createTicketSla(now.minusHours(4), now);
 
       List<SlaBreachCandidate> candidates =
-          ticketSlaRepository.findResolutionBreachCandidateIds(now);
+          ticketSlaRepository.findResolutionBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -197,7 +204,7 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       createTicketSla(now.minusHours(4), now.plusMinutes(1));
 
       List<SlaBreachCandidate> candidates =
-          ticketSlaRepository.findResolutionBreachCandidateIds(now);
+          ticketSlaRepository.findResolutionBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }
@@ -209,7 +216,7 @@ public class TicketSlaRepositoryIntegrationTest extends AbstractControllerIntegr
       setResolutionBreachedAt(ticketSla.getId(), now.minusSeconds(30));
 
       List<SlaBreachCandidate> candidates =
-          ticketSlaRepository.findResolutionBreachCandidateIds(now);
+          ticketSlaRepository.findResolutionBreachCandidateIds(now, 0L);
 
       assertTrue(candidates.isEmpty());
     }

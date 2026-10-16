@@ -22,8 +22,12 @@ public interface TicketSlaRepository extends JpaRepository<TicketSla, Long> {
           WHERE ts.responseDueAt < :now
           AND (ts.firstRespondedAt IS NULL OR ts.firstRespondedAt > ts.responseDueAt)
           AND ts.responseBreachedAt IS NULL
+          AND ts.id > :lastId
+          ORDER BY ts.id ASC
+          LIMIT 100
           """)
-  List<SlaBreachCandidate> findResponseBreachCandidateIds(@Param("now") LocalDateTime now);
+  List<SlaBreachCandidate> findResponseBreachCandidateIds(
+      @Param("now") LocalDateTime now, @Param("lastId") Long lastId);
 
   @Query(
       """
@@ -34,8 +38,12 @@ public interface TicketSlaRepository extends JpaRepository<TicketSla, Long> {
           WHERE ts.resolutionDueAt < :now
           AND (ts.resolvedAt IS NULL OR ts.resolvedAt > ts.resolutionDueAt)
           AND ts.resolutionBreachedAt IS NULL
+          AND ts.id > :lastId
+          ORDER BY ts.id ASC
+          LIMIT 100
           """)
-  List<SlaBreachCandidate> findResolutionBreachCandidateIds(@Param("now") LocalDateTime now);
+  List<SlaBreachCandidate> findResolutionBreachCandidateIds(
+      @Param("now") LocalDateTime now, @Param("lastId") Long lastId);
 
   @Modifying
   @Query(

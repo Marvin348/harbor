@@ -25,14 +25,29 @@ public class SlaBreachScheduler {
   void enqueueBreachCandidates() {
     LocalDateTime now = LocalDateTime.now();
 
-    enqueueCandidates(
-        ticketSlaRepository.findResponseBreachCandidateIds(now), SlaBreachType.RESPONSE, now);
-
-    enqueueCandidates(
-        ticketSlaRepository.findResolutionBreachCandidateIds(now), SlaBreachType.RESOLUTION, now);
+    enqueueCandidatesPaginated(SlaBreachType.RESPONSE, now);
+    enqueueCandidatesPaginated(SlaBreachType.RESOLUTION, now);
   }
 
-  // later Batching / Pagination
+  private void enqueueCandidatesPaginated(SlaBreachType breachType, LocalDateTime now) {
+    Long lastId = 0L;
+
+    while (true) {
+      List<SlaBreachCandidate> candidates =
+          breachType == SlaBreachType.RESPONSE
+              ? ticketSlaRepository.findResponseBreachCandidateIds(now, lastId)
+              : ticketSlaRepository.findResolutionBreachCandidateIds(now, lastId);
+
+      if (candidates.isEmpty()) {
+        break;
+      }
+
+      enqueueCandidates(candidates, breachType, now);
+
+      lastId = candidates.getLast().ticketSlaId();
+    }
+  }
+
   private void enqueueCandidates(
       List<SlaBreachCandidate> candidates, SlaBreachType breachType, LocalDateTime now) {
     for (SlaBreachCandidate candidate : candidates) {

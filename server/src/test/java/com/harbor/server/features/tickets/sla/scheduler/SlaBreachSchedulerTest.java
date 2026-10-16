@@ -41,9 +41,11 @@ class SlaBreachSchedulerTest {
     long processingId = 100L;
     SlaBreachCandidate candidate = new SlaBreachCandidate(ticketSlaId, organizationId);
 
-    when(ticketSlaRepository.findResponseBreachCandidateIds(any(LocalDateTime.class)))
+    when(ticketSlaRepository.findResponseBreachCandidateIds(
+            any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of(candidate));
-    when(ticketSlaRepository.findResolutionBreachCandidateIds(any(LocalDateTime.class)))
+    when(ticketSlaRepository.findResolutionBreachCandidateIds(
+            any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of());
     when(slaBreachProcessingRepository.createIfAbsent(
             eq(organizationId),
@@ -59,7 +61,9 @@ class SlaBreachSchedulerTest {
     InOrder callOrder =
         inOrder(ticketSlaRepository, slaBreachProcessingRepository, slaBreachProducer);
     ArgumentCaptor<LocalDateTime> nowCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
-    callOrder.verify(ticketSlaRepository).findResponseBreachCandidateIds(nowCaptor.capture());
+    callOrder
+        .verify(ticketSlaRepository)
+        .findResponseBreachCandidateIds(nowCaptor.capture(), eq(0L));
     LocalDateTime usedNow = nowCaptor.getValue();
 
     callOrder
@@ -67,7 +71,7 @@ class SlaBreachSchedulerTest {
         .createIfAbsent(organizationId, ticketSlaId, SlaBreachType.RESPONSE, usedNow);
     callOrder.verify(slaBreachProducer).send(new SlaBreachJob(processingId));
     callOrder.verify(slaBreachProcessingRepository).markQueued(processingId, usedNow);
-    callOrder.verify(ticketSlaRepository).findResolutionBreachCandidateIds(usedNow);
+    callOrder.verify(ticketSlaRepository).findResolutionBreachCandidateIds(usedNow, 0L);
   }
 
   @Test
@@ -77,9 +81,11 @@ class SlaBreachSchedulerTest {
     long processingId = 101L;
     SlaBreachCandidate candidate = new SlaBreachCandidate(ticketSlaId, organizationId);
 
-    when(ticketSlaRepository.findResolutionBreachCandidateIds(any(LocalDateTime.class)))
+    when(ticketSlaRepository.findResolutionBreachCandidateIds(
+            any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of(candidate));
-    when(ticketSlaRepository.findResponseBreachCandidateIds(any(LocalDateTime.class)))
+    when(ticketSlaRepository.findResponseBreachCandidateIds(
+            any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of());
     when(slaBreachProcessingRepository.createIfAbsent(
             eq(organizationId),
@@ -96,10 +102,12 @@ class SlaBreachSchedulerTest {
         inOrder(ticketSlaRepository, slaBreachProcessingRepository, slaBreachProducer);
 
     ArgumentCaptor<LocalDateTime> nowCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
-    callOrder.verify(ticketSlaRepository).findResponseBreachCandidateIds(nowCaptor.capture());
+    callOrder
+        .verify(ticketSlaRepository)
+        .findResponseBreachCandidateIds(nowCaptor.capture(), eq(0L));
     LocalDateTime usedNow = nowCaptor.getValue();
 
-    callOrder.verify(ticketSlaRepository).findResolutionBreachCandidateIds(usedNow);
+    callOrder.verify(ticketSlaRepository).findResolutionBreachCandidateIds(usedNow, 0L);
     callOrder
         .verify(slaBreachProcessingRepository)
         .createIfAbsent(organizationId, ticketSlaId, SlaBreachType.RESOLUTION, usedNow);
@@ -117,9 +125,11 @@ class SlaBreachSchedulerTest {
         new SlaBreachCandidate(existingTicketSlaId, organizationId);
     SlaBreachCandidate newCandidate = new SlaBreachCandidate(newTicketSlaId, organizationId);
 
-    when(ticketSlaRepository.findResponseBreachCandidateIds(any(LocalDateTime.class)))
+    when(ticketSlaRepository.findResponseBreachCandidateIds(
+            any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of(existingCandidate, newCandidate));
-    when(ticketSlaRepository.findResolutionBreachCandidateIds(any(LocalDateTime.class)))
+    when(ticketSlaRepository.findResolutionBreachCandidateIds(
+            any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of());
     when(slaBreachProcessingRepository.createIfAbsent(
             eq(organizationId),
@@ -162,9 +172,11 @@ class SlaBreachSchedulerTest {
     long processingId = 101L;
     SlaBreachCandidate candidate = new SlaBreachCandidate(ticketSlaId, organizationId);
 
-    when(ticketSlaRepository.findResolutionBreachCandidateIds(any(LocalDateTime.class)))
+    when(ticketSlaRepository.findResolutionBreachCandidateIds(
+            any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of(candidate));
-    when(ticketSlaRepository.findResponseBreachCandidateIds(any(LocalDateTime.class)))
+    when(ticketSlaRepository.findResponseBreachCandidateIds(
+            any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of());
     when(slaBreachProcessingRepository.createIfAbsent(
             eq(organizationId),
@@ -184,7 +196,7 @@ class SlaBreachSchedulerTest {
   }
 
   @Test
-  void shouldenqueueMultipleCandidates() {
+  void shouldEnqueueCandidatesAcrossMultiplePages() {
     long organizationId = 7L;
     long oneTicketSlaId = 42L;
     long twoTicketSlaId = 43L;
@@ -201,9 +213,18 @@ class SlaBreachSchedulerTest {
     SlaBreachCandidate threeCandidate = new SlaBreachCandidate(threeTicketSlaId, organizationId);
     SlaBreachCandidate fourCandidate = new SlaBreachCandidate(fourTicketSlaId, organizationId);
 
-    when(ticketSlaRepository.findResponseBreachCandidateIds(any(LocalDateTime.class)))
-        .thenReturn(List.of(oneCandidate, twoCandidate, threeCandidate, fourCandidate));
-    when(ticketSlaRepository.findResolutionBreachCandidateIds(any(LocalDateTime.class)))
+    List<SlaBreachCandidate> firstPage = List.of(oneCandidate, twoCandidate);
+    List<SlaBreachCandidate> secondPage = List.of(threeCandidate, fourCandidate);
+
+    when(ticketSlaRepository.findResponseBreachCandidateIds(any(LocalDateTime.class), eq(0L)))
+        .thenReturn(firstPage);
+    when(ticketSlaRepository.findResponseBreachCandidateIds(
+            any(LocalDateTime.class), eq(twoTicketSlaId)))
+        .thenReturn(secondPage);
+    when(ticketSlaRepository.findResponseBreachCandidateIds(
+            any(LocalDateTime.class), eq(fourTicketSlaId)))
+        .thenReturn(List.of());
+    when(ticketSlaRepository.findResolutionBreachCandidateIds(any(LocalDateTime.class), eq(0L)))
         .thenReturn(List.of());
     when(slaBreachProcessingRepository.createIfAbsent(
             eq(organizationId),
@@ -239,6 +260,13 @@ class SlaBreachSchedulerTest {
         .thenReturn(1);
 
     slaBreachScheduler.enqueueBreachCandidates();
+
+    verify(ticketSlaRepository).findResponseBreachCandidateIds(any(LocalDateTime.class), eq(0L));
+    verify(ticketSlaRepository)
+        .findResponseBreachCandidateIds(any(LocalDateTime.class), eq(twoTicketSlaId));
+    verify(ticketSlaRepository)
+        .findResponseBreachCandidateIds(any(LocalDateTime.class), eq(fourTicketSlaId));
+    verify(ticketSlaRepository).findResolutionBreachCandidateIds(any(LocalDateTime.class), eq(0L));
 
     verify(slaBreachProcessingRepository)
         .createIfAbsent(
