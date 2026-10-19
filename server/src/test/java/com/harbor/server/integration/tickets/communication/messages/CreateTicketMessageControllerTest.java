@@ -1,6 +1,8 @@
 package com.harbor.server.integration.tickets.communication.messages;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,11 +24,16 @@ import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 public class CreateTicketMessageControllerTest extends AbstractControllerIntegrationTest {
 
   @Autowired private TicketMessageRepository ticketMessageRepository;
+  @MockitoBean private SimpMessagingTemplate messagingTemplate;
 
   private Ticket createTicket(AuthenticatedTestUser auth) {
     Organization organization = auth.user().getOrganization();
@@ -391,5 +398,46 @@ public class CreateTicketMessageControllerTest extends AbstractControllerIntegra
         .andExpect(status().isUnauthorized());
 
     assertThat(ticketMessageRepository.count()).isZero();
+  }
+
+  @Test
+  @Transactional
+  void shouldPublishWebSocketNotificationOnlyAfterTransactionCommit() throws Exception {
+    AuthenticatedTestUser auth = testAuthHelper.loginAgent();
+    Ticket ticket = createTicket(auth);
+
+    performCreateMessage(
+            auth.sessionCookie(),
+            ticket.getId(),
+            validRequestBody(TicketMessageType.REPLY, "Committed message"))
+        .andExpect(status().isCreated());
+
+    verifyNoInteractions(messagingTemplate);
+
+    TestTransaction.flagForCommit();
+    TestTransaction.end();
+
+    verify(messagingTemplate)
+        .convertAndSend("/topic/tickets." + ticket.getId(), "NEW_MESSAGE");
+  }
+
+  @Test
+  @Transactional
+  void shouldNotPublishWebSocketNotificationWhenTransactionRollsBack() throws Exception {
+    AuthenticatedTestUser auth = testAuthHelper.loginAgent();
+    Ticket ticket = createTicket(auth);
+
+    performCreateMessage(
+            auth.sessionCookie(),
+            ticket.getId(),
+            validRequestBody(TicketMessageType.REPLY, "Rolled-back message"))
+        .andExpect(status().isCreated());
+
+    verifyNoInteractions(messagingTemplate);
+
+    TestTransaction.flagForRollback();
+    TestTransaction.end();
+
+    verifyNoInteractions(messagingTemplate);
   }
 }
