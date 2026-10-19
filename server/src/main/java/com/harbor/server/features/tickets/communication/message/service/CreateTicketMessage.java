@@ -7,6 +7,7 @@ import com.harbor.server.features.organization.model.Organization;
 import com.harbor.server.features.organization.repository.OrganizationRepository;
 import com.harbor.server.features.tickets.communication.message.dto.request.CreateTicketMessageRequest;
 import com.harbor.server.features.tickets.communication.message.model.TicketMessage;
+import com.harbor.server.features.tickets.communication.message.event.TicketMessageCreatedEvent;
 import com.harbor.server.features.tickets.communication.message.model.TicketMessageType;
 import com.harbor.server.features.tickets.communication.message.repository.TicketMessageRepository;
 import com.harbor.server.features.tickets.model.Ticket;
@@ -16,7 +17,9 @@ import com.harbor.server.features.user.model.OrganizationRole;
 import com.harbor.server.features.user.model.User;
 import com.harbor.server.features.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +31,9 @@ public class CreateTicketMessage {
   private final OrganizationRepository organizationRepository;
   private final UserRepository userRepository;
   private final TicketAccessService ticketAccessService;
+  private final ApplicationEventPublisher eventPublisher;
 
+  @Transactional
   public void execute(Long ticketId, CreateTicketMessageRequest request) {
     CustomUserDetails userDetails = currentUserProvider.getCurrentUser();
 
@@ -48,5 +53,7 @@ public class CreateTicketMessage {
         new TicketMessage(ticket, organization, author, request.type(), request.body());
 
     ticketMessageRepository.save(message);
+
+    eventPublisher.publishEvent(new TicketMessageCreatedEvent(ticketId));
   }
 }

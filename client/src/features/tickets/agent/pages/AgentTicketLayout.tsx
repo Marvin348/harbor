@@ -4,11 +4,13 @@ import { Route } from "@/routes/_app.tickets_.$id.tsx";
 import { useGetAgentTicketHeader } from "@/features/tickets/agent/hooks/useGetAgentTicketHeader.ts";
 import { AgentTicketDetailsLoadingState } from "@/features/tickets/agent/components/state/AgentTicketDetailsLoadingState.tsx";
 import { AgentTicketDetailsErrorState } from "@/features/tickets/agent/components/state/AgentTicketDetailsErrorState.tsx";
+import { useTicketMessagesSubscription } from "@/features/tickets/messages/hooks/useTicketMessagesSubscription.ts";
 
 export const AgentTicketLayout = () => {
   const { id } = Route.useParams();
   const { agentTicketHeader, isLoading, isError, refetch } =
     useGetAgentTicketHeader(Number(id));
+  useTicketMessagesSubscription(Number(id));
 
   if (isLoading) return <AgentTicketDetailsLoadingState />;
   if (isError || !agentTicketHeader)

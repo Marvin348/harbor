@@ -2,8 +2,11 @@ import { Outlet } from "@tanstack/react-router";
 import { AppSidebar } from "@/features/appLayout/components/sidebar/AppSidebar.tsx";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar.tsx";
 import { AppHeader } from "@/features/appLayout/components/AppHeader.tsx";
+import { useWebSocket } from "@/features/tickets/messages/hooks/useWebSocket.ts";
 
 export const AppLayout = () => {
+  useWebSocket();
+
   return (
     <SidebarProvider className="h-svh overflow-hidden">
       <AppSidebar />
